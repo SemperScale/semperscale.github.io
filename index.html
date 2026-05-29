@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SemperScale - Advanced Tower Data Solutions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0F766E;
+            --primary-light: #14B8A6;
+            --secondary: #0369A1;
+            --accent: #06B6D4;
+            --dark: #0F172A;
+            --light: #F8FAFC;
+            --text: #1E293B;
+            --border: #E2E8F0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: #FFFFFF;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--primary-light);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+        }
+
+        .hero .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 1;
+            color: white;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid var(--accent);
+        }
+
+        .cta-button:hover {
+            background: white;
+            color: var(--primary);
+        }
+
+        .cta-button-secondary {
+            background: transparent;
+            border: 2px solid white;
+            margin-left: 1rem;
+        }
+
+        .cta-button-secondary:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Sections */
+        section {
+            padding: 5rem 2rem;
+        }
+
+        section.alt {
+            background: var(--light);
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        section > .container > p:first-of-type {
+            font-size: 1.1rem;
+            color: #64748B;
+            margin-bottom: 3rem;
+            max-width: 700px;
+        }
+
+        .hero > .container > p:first-of-type {
+            color: white;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Overview Section */
+        .overview-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .overview-text h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .overview-text p {
+            margin-bottom: 1.5rem;
+            color: #475569;
+            line-height: 1.8;
+        }
+
+        .overview-visual {
+            border-radius: 1rem;
+            height: 400px;
+            overflow: hidden;
+        }
+
+        .overview-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            border-color: var(--primary-light);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .service-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .service-card p {
+            color: #64748B;
+            line-height: 1.7;
+        }
+
+        /* Team Section */
+        .team-content {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .team-content p {
+            font-size: 1.1rem;
+            color: #64748B;
+            margin-bottom: 2rem;
+        }
+
+        .team-highlight {
+            background: linear-gradient(135deg, rgba(15, 118, 110, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            padding: 2rem;
+            border-radius: 1rem;
+            border-left: 4px solid var(--primary-light);
+        }
+
+        /* Contact Section */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .contact-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .contact-info p {
+            margin-bottom: 1.5rem;
+            color: #64748B;
+        }
+
+        .contact-item {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .contact-item-icon {
+            font-size: 1.5rem;
+            color: var(--primary-light);
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .contact-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .submit-btn {
+            background: var(--primary);
+            color: white;
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+            font-size: 1rem;
+        }
+
+        .submit-btn:hover {
+            background: var(--primary-light);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            nav ul {
+                gap: 1rem;
+            }
+
+            .overview-content,
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+
+            .overview-visual {
+                height: 300px;
+            }
+
+            .cta-button-secondary {
+                margin-left: 0;
+                margin-top: 1rem;
+                display: block;
+            }
+
+            section h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="#" class="logo">SemperScale</a>
+            <ul>
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#services">Services</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Scientific Rigor Made Simple</h1>
+            <p>From raw data to polished insights, we transform  eddy covariance flux tower measurements into actionable intelligence for science and industry.</p>
+            <a href="#contact" class="cta-button">Get Started</a>
+            <a href="#services" class="cta-button cta-button-secondary">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <section id="overview">
+        <div class="container">
+            <h2>Who We Are</h2>
+            <div class="overview-content">
+                <div class="overview-text">
+                    <h3>Expert Eddy Covariance Solutions</h3>
+                    <p>Our team's decades of experience in flux tower deployment, operation, and data processing, we understand every stage of the EC measurement lifecycle. Working alongside field leaders, we deliver reliable and accurate results.</p>
+                    <p>Whether you're looking to process existing data, deploy a new tower, or build out your data pipeline, we handle it all—so you don't have to maintain expensive in-house teams.</p>
+                    <p>Our comprehensive approach ensures clean, scientifically rigorous data products ready for publication, regulatory compliance, or business intelligence.</p>
+                </div>
+                <div class="overview-visual">
+                    <img src="landscape.jpeg" alt="Flux tower landscape">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="alt">
+        <div class="container">
+            <h2>Our Services</h2>
+            <p>Comprehensive solutions spanning the entire flux tower lifecycle</p>
+            <div class="services-grid">
+                <div class="service-card">
+                    <h3>Tower Installation & Deployment</h3>
+                    <p>Professional site assessment, tower installation, sensor calibration, and system validation. We handle the technical complexity so you can focus on your core mission.</p>
+                </div>
+                <div class="service-card">
+                    <h3>System Operation & Maintenance</h3>
+                    <p>Ongoing monitoring, preventive maintenance, sensor replacement, and data QA. Keep your tower running smoothly with minimal overhead.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Data Processing & QC</h3>
+                    <p>Raw data to publication-ready products. Quality control, gap-filling, uncertainty quantification, and rigorous validation protocols.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Analysis & Visualization</h3>
+                    <p>Custom analyses, spatial visualization, time-series interpretation, and stakeholder-ready reports tailored to your specific needs.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Industry Applications</h3>
+                    <p>Evapotranspiration mining, carbon credit quantification, methane monitoring, and oil & gas site assessment with regulatory-grade precision.</p>
+                </div>
+                <div class="service-card">
+                    <h3>Consulting & Training</h3>
+                    <p>Expert guidance on methodology, best practices, and emerging techniques. We work with you to build internal capacity when needed.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team">
+        <div class="container">
+            <h2>Our Team</h2>
+            <div class="team-content">
+                <p>We are a collaborative group of experienced researchers and field engineers specializing in eddy covariance flux measurement and analysis.</p>
+                <div class="team-highlight">
+                    <p><strong>Collective expertise</strong> spanning tower deployment, sensor operation, data science, and field methodology across diverse ecosystems and applications. We combine academic rigor with practical engineering to deliver solutions that work in the real world.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="alt">
+        <div class="container">
+           
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h2>Get In Touch</h2>
+                    <p>Ready to discuss your project? Let's talk.</p>
+                    <div class="contact-item">
+                        
+                    </div>
+
+                </div>
+                <form class="contact-form" name="contact" method="POST" netlify>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SemperScale. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
