@@ -294,6 +294,37 @@
             opacity: 0.8;
         }
 
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--text);
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+
+        .nav-toggle.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav-toggle.open span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav-toggle.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .hero h1 {
@@ -304,12 +335,35 @@
                 font-size: 1.1rem;
             }
 
-            nav ul {
-                gap: 1rem;
+            .nav-toggle {
+                display: flex;
             }
 
-            .overview-content,
-            .contact-container {
+            nav ul {
+                display: none;
+                flex-direction: column;
+                gap: 0;
+                width: 100%;
+                border-top: 1px solid var(--border);
+                margin-top: 0.5rem;
+            }
+
+            nav ul.open {
+                display: flex;
+            }
+
+            nav ul li a {
+                display: block;
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                font-size: 1rem;
+            }
+
+            nav .container {
+                flex-wrap: wrap;
+            }
+
+            .overview-content {
                 grid-template-columns: 1fr;
             }
 
@@ -334,7 +388,12 @@
     <nav>
         <div class="container">
             <a href="#" class="logo">SemperScale</a>
-            <ul>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul id="nav-menu">
                 <li><a href="#overview">Overview</a></li>
                 <li><a href="#services">Services</a></li>
                 <li><a href="#team">Team</a></li>
@@ -424,7 +483,7 @@
             <h2>Get In Touch</h2>
             <div class="contact-container">
                 <p>Ready to discuss your project? Reach out and we'll get back to you.</p>
-                <a href="mailto:semperscale@gmail.com" class="contact-email-link">contact@semperscale.com</a>
+                <a href="mailto:semperscale@gmail.com" class="contact-email-link">semperscale@gmail.com</a>
             </div>
         </div>
     </section>
@@ -435,5 +494,23 @@
             <p>&copy; 2026 SemperScale. All rights reserved.</p>
         </div>
     </footer>
+    <script>
+        const toggle = document.querySelector('.nav-toggle');
+        const menu = document.getElementById('nav-menu');
+
+        toggle.addEventListener('click', () => {
+            const open = menu.classList.toggle('open');
+            toggle.classList.toggle('open', open);
+            toggle.setAttribute('aria-expanded', open);
+        });
+
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                toggle.classList.remove('open');
+                toggle.setAttribute('aria-expanded', false);
+            });
+        });
+    </script>
 </body>
 </html>
