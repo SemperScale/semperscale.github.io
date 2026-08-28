@@ -3,385 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SemperScale - Advanced Tower Data Solutions</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    <title>SemperScale - Boutique Eddy Covariance Consulting</title>
+    <meta name="description" content="SemperScale advises on eddy covariance flux tower deployment and monitoring for mining, oil &amp; gas, CCUS, nature-based solutions, and academic research.">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DHD9K9PDWL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
 
-        :root {
-            --primary: #0F766E;
-            --primary-light: #14B8A6;
-            --secondary: #0369A1;
-            --accent: #06B6D4;
-            --dark: #0F172A;
-            --light: #F8FAFC;
-            --text: #1E293B;
-            --border: #E2E8F0;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: var(--text);
-            background-color: #FFFFFF;
-        }
-
-        /* Navigation */
-        nav {
-            background: white;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--primary);
-            text-decoration: none;
-        }
-
-        nav ul {
-            list-style: none;
-            display: flex;
-            gap: 2rem;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: var(--text);
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        nav a:hover {
-            color: var(--primary-light);
-        }
-
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
-            color: white;
-            padding: 6rem 2rem;
-            text-align: center;
-        }
-
-        .hero .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .hero h1 {
-            font-size: 3.5rem;
-            margin-bottom: 1rem;
-            font-weight: 700;
-        }
-
-        .hero p {
-            font-size: 1.3rem;
-            margin-bottom: 2rem;
-            opacity: 1;
-            color: white;
-        }
-
-        .cta-button {
-            display: inline-block;
-            background: var(--accent);
-            color: white;
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-            border: 2px solid var(--accent);
-        }
-
-        .cta-button:hover {
-            background: white;
-            color: var(--primary);
-        }
-
-        .cta-button-secondary {
-            background: transparent;
-            border: 2px solid white;
-            margin-left: 1rem;
-        }
-
-        .cta-button-secondary:hover {
-            background: white;
-            color: var(--primary);
-            border-color: white;
-        }
-
-        /* Container */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 2rem;
-        }
-
-        /* Sections */
-        section {
-            padding: 5rem 2rem;
-        }
-
-        section.alt {
-            background: var(--light);
-        }
-
-        section h2 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        section > .container > p:first-of-type {
-            font-size: 1.1rem;
-            color: #64748B;
-            margin-bottom: 3rem;
-            max-width: 700px;
-        }
-
-        .hero > .container > p:first-of-type {
-            color: white;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* Overview Section */
-        .overview-content {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-            align-items: center;
-        }
-
-        .overview-text h3 {
-            font-size: 1.8rem;
-            margin-bottom: 1.5rem;
-            color: var(--primary);
-        }
-
-        .overview-text p {
-            margin-bottom: 1.5rem;
-            color: #475569;
-            line-height: 1.8;
-        }
-
-        .overview-visual {
-            border-radius: 1rem;
-            height: 400px;
-            overflow: hidden;
-        }
-
-        .overview-visual img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Services Grid */
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-        }
-
-        .service-card {
-            background: white;
-            border-radius: 1rem;
-            padding: 2rem;
-            border: 1px solid var(--border);
-            transition: all 0.3s;
-        }
-
-        .service-card:hover {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transform: translateY(-5px);
-            border-color: var(--primary-light);
-        }
-
-        .service-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .service-card h3 {
-            font-size: 1.3rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
-        }
-
-        .service-card p {
-            color: #64748B;
-            line-height: 1.7;
-        }
-
-        /* Team Section */
-        .team-content {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .team-content p {
-            font-size: 1.1rem;
-            color: #64748B;
-            margin-bottom: 2rem;
-        }
-
-        .team-highlight {
-            background: linear-gradient(135deg, rgba(15, 118, 110, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
-            padding: 2rem;
-            border-radius: 1rem;
-            border-left: 4px solid var(--primary-light);
-        }
-
-        /* Contact Section */
-        .contact-container {
-            text-align: center;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .contact-container p {
-            font-size: 1.1rem;
-            color: #64748B;
-            margin-bottom: 2rem;
-        }
-
-        .contact-email-link {
-            display: inline-block;
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--primary);
-            text-decoration: none;
-            background: white;
-            padding: 1rem 2rem;
-            border-radius: 0.5rem;
-            border: 2px solid var(--primary-light);
-            transition: all 0.3s;
-        }
-
-        .contact-email-link:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
-
-        /* Footer */
-        footer {
-            background: var(--dark);
-            color: white;
-            padding: 2rem;
-            text-align: center;
-        }
-
-        footer p {
-            opacity: 0.8;
-        }
-
-        .nav-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 5px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 4px;
-        }
-
-        .nav-toggle span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--text);
-            border-radius: 2px;
-            transition: all 0.3s;
-        }
-
-        .nav-toggle.open span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
-        }
-
-        .nav-toggle.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .nav-toggle.open span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero p {
-                font-size: 1.1rem;
-            }
-
-            .nav-toggle {
-                display: flex;
-            }
-
-            nav ul {
-                display: none;
-                flex-direction: column;
-                gap: 0;
-                width: 100%;
-                border-top: 1px solid var(--border);
-                margin-top: 0.5rem;
-            }
-
-            nav ul.open {
-                display: flex;
-            }
-
-            nav ul li a {
-                display: block;
-                padding: 0.75rem 0;
-                border-bottom: 1px solid var(--border);
-                font-size: 1rem;
-            }
-
-            nav .container {
-                flex-wrap: wrap;
-            }
-
-            .overview-content {
-                grid-template-columns: 1fr;
-            }
-
-            .overview-visual {
-                height: 300px;
-            }
-
-            .cta-button-secondary {
-                margin-left: 0;
-                margin-top: 1rem;
-                display: block;
-            }
-
-            section h2 {
-                font-size: 2rem;
-            }
-        }
-    </style>
+      gtag('config', 'G-DHD9K9PDWL');
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -395,8 +28,8 @@
             </button>
             <ul id="nav-menu">
                 <li><a href="#overview">Overview</a></li>
-                <li><a href="#services">Services</a></li>
-                <li><a href="#team">Team</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html">About</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
         </div>
@@ -405,28 +38,8 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
-            <h1>Scientific Rigor Made Simple</h1>
-            <p>From raw data to polished insights, we transform  eddy covariance flux tower measurements into actionable intelligence for science and industry.</p>
-            <a href="#contact" class="cta-button">Get Started</a>
-            <a href="#services" class="cta-button cta-button-secondary">Learn More</a>
-        </div>
-    </section>
-
-    <!-- Overview Section -->
-    <section id="overview">
-        <div class="container">
-            <h2>Who We Are</h2>
-            <div class="overview-content">
-                <div class="overview-text">
-                    <h3>Expert Eddy Covariance Solutions</h3>
-                    <p>Our team's decades of experience in flux tower deployment, operation, and data processing, we understand every stage of the EC measurement lifecycle. Working alongside field leaders, we deliver reliable and accurate results.</p>
-                    <p>Whether you're looking to process existing data, deploy a new tower, or build out your data pipeline, we handle it all—so you don't have to maintain expensive in-house teams.</p>
-                    <p>Our comprehensive approach ensures clean, scientifically rigorous data products ready for publication, regulatory compliance, or business intelligence.</p>
-                </div>
-                <div class="overview-visual">
-                    <img src="landscape.jpeg" alt="Flux tower landscape">
-                </div>
-            </div>
+            <h1>Eddy Covariance Solutions</h1>
+            <p> Boutique flux tower consulting from project conceptualization through decommissioning, built on decades of experience.</p>
         </div>
     </section>
 
@@ -434,45 +47,40 @@
     <section id="services" class="alt">
         <div class="container">
             <h2>Our Services</h2>
-            <p>Comprehensive solutions spanning the entire flux tower lifecycle</p>
             <div class="services-grid">
                 <div class="service-card">
-                    <h3>Tower Installation & Deployment</h3>
-                    <p>Professional site assessment, tower installation, sensor calibration, and system validation. We handle the technical complexity so you can focus on your core mission.</p>
+                    <h3>Project Scoping & Tower Siting</h3>
+                    <p>Defining regions of interest, uncertainty thresholds, and optimal tower location, height, and count through footprint modeling and flux spatialization.</p>
+                    <a class="card-link" href="services.html#siting">See details &rarr;</a>
                 </div>
                 <div class="service-card">
-                    <h3>System Operation & Maintenance</h3>
-                    <p>Ongoing monitoring, preventive maintenance, sensor replacement, and data QA. Keep your tower running smoothly with minimal overhead.</p>
+                    <h3>Equipment & Deployment</h3>
+                    <p>Cost-effective equipment selection, power and data links, and ongoing tower maintenance.</p>
+                    <a class="card-link" href="services.html#equipment">See details &rarr;</a>
                 </div>
                 <div class="service-card">
-                    <h3>Data Processing & QC</h3>
-                    <p>Raw data to publication-ready products. Quality control, gap-filling, uncertainty quantification, and rigorous validation protocols.</p>
+                    <h3>Data Processing & QA/QC</h3>
+                    <p>Gapfilling, uncertainty quantification, sensor drift calibration, flux partitioning, and automated processing pipelines.</p>
+                    <a class="card-link" href="services.html#data-processing">See details &rarr;</a>
                 </div>
                 <div class="service-card">
-                    <h3>Analysis & Visualization</h3>
-                    <p>Custom analyses, spatial visualization, time-series interpretation, and stakeholder-ready reports tailored to your specific needs.</p>
+                    <h3>Science-Grade Insights & Tools</h3>
+                    <p>Integrating additional datasets (satellite, soil chambers, meteorology), upscaling across landscapes, and tailored dashboards for your team.</p>
+                    <a class="card-link" href="services.html#insights">See details &rarr;</a>
                 </div>
                 <div class="service-card">
-                    <h3>Industry Applications</h3>
-                    <p>Evapotranspiration mining, carbon credit quantification, methane monitoring, and oil & gas site assessment with regulatory-grade precision.</p>
+                    <h3>Reporting & MRV</h3>
+                    <p>Carbon credit MRV, regulatory emissions reporting, and alignment with FLUXNET, ICOS, AmeriFlux standards.</p>
+                    <a class="card-link" href="services.html#reporting">See details &rarr;</a>
                 </div>
                 <div class="service-card">
-                    <h3>Consulting & Training</h3>
-                    <p>Expert guidance on methodology, best practices, and emerging techniques. We work with you to build internal capacity when needed.</p>
+                    <h3>Industries We Serve</h3>
+                    <p>Environmental consultants, mining, oil &amp; gas, CCUS, nature-based carbon solutions, and academic research support.</p>
+                    <a class="card-link" href="services.html#industries">See details &rarr;</a>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Team Section -->
-    <section id="team">
-        <div class="container">
-            <h2>Our Team</h2>
-            <div class="team-content">
-                <p>We are a collaborative group of experienced researchers and field engineers specializing in eddy covariance flux measurement and analysis.</p>
-                <div class="team-highlight">
-                    <p><strong>Collective expertise</strong> spanning tower deployment, sensor operation, data science, and field methodology across diverse ecosystems and applications. We combine academic rigor with practical engineering to deliver solutions that work in the real world.</p>
-                </div>
+            <div style="text-align: center; margin-top: 3rem;">
+                <a href="services.html" class="cta-button">View All Services</a>
             </div>
         </div>
     </section>

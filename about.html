@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - SemperScale</title>
+    <meta name="description" content="Meet the SemperScale team: decades of combined experience in eddy covariance flux tower deployment and monitoring, formerly at Lawrence Berkeley National Lab.">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo">SemperScale</a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul id="nav-menu">
+                <li><a href="index.html#overview">Overview</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html" class="active">About</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    
+    <!-- Overview Section -->
+    <section id="overview">
+        <div class="container">
+            <h2>Who We Are</h2>
+            <div class="overview-content">
+                <div class="overview-text">
+                    <p>We draw from decades of experience in flux tower deployment, operation, and data processing at the Lawrence Berkeley National Lab. Working alongside field leaders, we understand every stage of the eddy covariance measurement lifecycle.</p>
+                    <p>Whether you're looking to deploy a new tower, build out your data pipeline, or make sense of your measurements, we provide tailored solutions that meet your goals.</p>
+                    <p>Our comprehensive approach ensures clean, scientifically rigorous data products ready for publication, regulatory compliance, or business intelligence.</p>
+                </div>
+                <div class="overview-visual">
+                    <img src="landscape.jpeg" alt="Flux tower landscape">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team">
+        <div class="container">
+            <h2>Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <a class="profile-link" href="https://sruehr.github.io" target="_blank" rel="noopener noreferrer">
+                        <div class="team-photo"><img src="photos/ruehr_headshot_web.jpg" alt="Sophie Ruehr"></div>
+                        <h3>Sophie Ruehr, Ph.D.</h3>
+                    </a>
+                    <div class="role">Co-Founder</div>
+                    <p class="bio">Sophie brings experience in data analysis, field work, and project management from her PhD in environmental science at University of California, Berkeley and postdoctoral training at Carnegie Science, Stanford.</p>
+                </div>
+                <div class="team-member">
+                    <a class="profile-link" href="https://www.keenangroup.info/" target="_blank" rel="noopener noreferrer">
+                        <div class="team-photo"><img src="photos/keenan_headshot.jpg" alt="Trevor Keenan"></div>
+                        <h3>Trevor Keenan, Ph.D.</h3>
+                    </a>
+                    <div class="role">Co-Founder</div>
+                    <p class="bio">Trevor is the Chen Chair in Climate Science and Solutions at University of California, Berkeley and a Faculty Scientist at the Lawrence Berkeley National Lab, where he leads the AmeriFlux network team. </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="alt">
+        <div class="container">
+            <h2>Get In Touch</h2>
+            <div class="contact-container">
+                <p>Ready to discuss your project? Reach out and we'll get back to you.</p>
+                <a href="mailto:semperscale@gmail.com" class="contact-email-link">semperscale@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SemperScale. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        const toggle = document.querySelector('.nav-toggle');
+        const menu = document.getElementById('nav-menu');
+
+        toggle.addEventListener('click', () => {
+            const open = menu.classList.toggle('open');
+            toggle.classList.toggle('open', open);
+            toggle.setAttribute('aria-expanded', open);
+        });
+
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                toggle.classList.remove('open');
+                toggle.setAttribute('aria-expanded', false);
+            });
+        });
+    </script>
+</body>
+</html>
