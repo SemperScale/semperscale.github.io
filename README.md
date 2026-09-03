@@ -1,1 +1,0 @@
-# semperterra.github.io
