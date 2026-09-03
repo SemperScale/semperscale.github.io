@@ -86,23 +86,23 @@ nav a.active {
 }
 
 .hero.hero-image {
-    background: linear-gradient(135deg, rgba(15, 42, 67, 0.55) 0%, rgba(30, 64, 99, 0.4) 100%),
+    background: linear-gradient(135deg, rgba(15, 42, 67, 0.3) 0%, rgba(30, 64, 99, 0.6) 100%),
         url("photos/website_images/fluxtower_landscape.png") center 25% / cover no-repeat;
     padding: 8rem 2rem;
 }
 
 .hero.hero-image.hero-image-team {
-    background: linear-gradient(135deg, rgba(15, 42, 67, 0.698) 0%, rgba(30, 64, 99, 0.4) 100%),
+    background: linear-gradient(135deg, rgba(15, 42, 67, 0.7) 0%, rgba(30, 64, 99, 0.65) 100%),
         url("photos/website_images/team.png") center 20% / cover no-repeat;
 }
 
 .hero.hero-image.hero-image-cornfield {
-    background: linear-gradient(135deg, rgba(15, 42, 67, 0.698) 0%, rgba(30, 64, 99, 0.4) 100%),
+    background: linear-gradient(135deg, rgba(15, 42, 67, 0.7) 0%, rgba(30, 64, 99, 0.65) 100%),
         url("photos/website_images/cornfield.jpeg") center 10% / cover no-repeat;
 }
 
 .hero.hero-image.hero-image-oak-savannah {
-    background: linear-gradient(135deg, rgba(15, 42, 67, 0.698) 0%, rgba(30, 64, 99, 0.4) 100%),
+    background: linear-gradient(135deg, rgba(15, 42, 67, 0.7) 0%, rgba(30, 64, 99, 0.65) 100%),
         url("photos/website_images/oak_savannah.jpeg") center / cover no-repeat;
 }
 
@@ -526,19 +526,19 @@ section > .container > p:first-of-type {
     display: inline-block;
     font-size: 1.3rem;
     font-weight: 600;
-    color: var(--primary);
+    color: var(--secondary);
     text-decoration: none;
     background: white;
     padding: 1rem 2rem;
     border-radius: 0.5rem;
-    border: 2px solid var(--primary-light);
+    border: 2px solid var(--secondary);
     transition: all 0.3s;
 }
 
 .contact-email-link:hover {
-    background: var(--primary);
+    background: var(--secondary);
     color: white;
-    border-color: var(--primary);
+    border-color: var(--secondary);
 }
 
 /* Footer */
