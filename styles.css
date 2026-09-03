@@ -98,7 +98,7 @@ nav a.active {
 
 .hero.hero-image.hero-image-cornfield {
     background: linear-gradient(135deg, rgba(15, 42, 67, 0.698) 0%, rgba(30, 64, 99, 0.4) 100%),
-        url("photos/website_images/cornfield.jpeg") center / cover no-repeat;
+        url("photos/website_images/cornfield.jpeg") center 10% / cover no-repeat;
 }
 
 .hero.hero-image h1,
