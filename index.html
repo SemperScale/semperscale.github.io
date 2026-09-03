@@ -6,6 +6,7 @@
     <title>SemperScale - Boutique Eddy Covariance Consulting</title>
     <meta name="description" content="SemperScale advises on eddy covariance flux tower deployment and monitoring for mining, oil &amp; gas, CCUS, nature-based solutions, and academic research.">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/jpeg" href="photos/flavicon.png">
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DHD9K9PDWL"></script>
     <script>
@@ -20,7 +21,7 @@
     <!-- Navigation -->
     <nav>
         <div class="container">
-            <a href="#" class="logo">SemperScale</a>
+            <a href="#" class="logo"><img src="photos/flavicon.png" alt="SemperScale"></a>
             <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
                 <span></span>
                 <span></span>
@@ -30,53 +31,61 @@
                 <li><a href="#overview">Overview</a></li>
                 <li><a href="services.html">Services</a></li>
                 <li><a href="about.html">About</a></li>
-                <li><a href="#contact">Contact</a></li>
+                <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
+    <section class="hero hero-image">
         <div class="container">
             <h1>Eddy Covariance Solutions</h1>
-            <p> Boutique flux tower consulting from project conceptualization through decommissioning, built on decades of experience.</p>
+            <h2> Boutique flux tower consulting built on decades of experience.</h2>
+        </div>
+    </section>
+
+    <!-- Approach Section -->
+    <section id="approach">
+        <div class="container">
+            <h2>Welcome</h2>
+            <p>SemperScale partners with you at every stage of the eddy covariance measurement lifecycle, from initial site scoping through long-term data delivery. We combine hands-on field experience with rigorous, publication-grade data processing to make sure your towers deliver measurements you can trust and act on.</p>
         </div>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="alt">
+    <section id="services" class="peach">
         <div class="container">
             <h2>Our Services</h2>
             <div class="services-grid">
                 <div class="service-card">
                     <h3>Project Scoping & Tower Siting</h3>
                     <p>Defining regions of interest, uncertainty thresholds, and optimal tower location, height, and count through footprint modeling and flux spatialization.</p>
-                    <a class="card-link" href="services.html#siting">See details &rarr;</a>
+                    <a class="card-link" href="services.html#siting" data-service="Project Scoping & Tower Siting">See details &rarr;</a>
                 </div>
                 <div class="service-card">
                     <h3>Equipment & Deployment</h3>
                     <p>Cost-effective equipment selection, power and data links, and ongoing tower maintenance.</p>
-                    <a class="card-link" href="services.html#equipment">See details &rarr;</a>
+                    <a class="card-link" href="services.html#equipment" data-service="Equipment & Deployment">See details &rarr;</a>
                 </div>
                 <div class="service-card">
                     <h3>Data Processing & QA/QC</h3>
                     <p>Gapfilling, uncertainty quantification, sensor drift calibration, flux partitioning, and automated processing pipelines.</p>
-                    <a class="card-link" href="services.html#data-processing">See details &rarr;</a>
+                    <a class="card-link" href="services.html#data-processing" data-service="Data Processing & QA/QC">See details &rarr;</a>
                 </div>
                 <div class="service-card">
                     <h3>Science-Grade Insights & Tools</h3>
                     <p>Integrating additional datasets (satellite, soil chambers, meteorology), upscaling across landscapes, and tailored dashboards for your team.</p>
-                    <a class="card-link" href="services.html#insights">See details &rarr;</a>
+                    <a class="card-link" href="services.html#insights" data-service="Science-Grade Insights & Tools">See details &rarr;</a>
                 </div>
                 <div class="service-card">
                     <h3>Reporting & MRV</h3>
                     <p>Carbon credit MRV, regulatory emissions reporting, and alignment with FLUXNET, ICOS, AmeriFlux standards.</p>
-                    <a class="card-link" href="services.html#reporting">See details &rarr;</a>
+                    <a class="card-link" href="services.html#reporting" data-service="Reporting & MRV">See details &rarr;</a>
                 </div>
                 <div class="service-card">
                     <h3>Industries We Serve</h3>
                     <p>Environmental consultants, mining, oil &amp; gas, CCUS, nature-based carbon solutions, and academic research support.</p>
-                    <a class="card-link" href="services.html#industries">See details &rarr;</a>
+                    <a class="card-link" href="services.html#industries" data-service="Industries We Serve">See details &rarr;</a>
                 </div>
             </div>
             <div style="text-align: center; margin-top: 3rem;">
@@ -85,13 +94,34 @@
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="alt">
+
+    <!-- Industries Section -->
+    <section id="industries">
         <div class="container">
-            <h2>Get In Touch</h2>
-            <div class="contact-container">
-                <p>Ready to discuss your project? Reach out and we'll get back to you.</p>
-                <a href="mailto:semperscale@gmail.com" class="contact-email-link">semperscale@gmail.com</a>
+            <h2>Industries We Serve</h2>
+            <p> With decades of experience in flux tower deployment, operation, and data processing, we understand every stage of the flux tower lifecycle.
+                We tailor flux tower deployment and analysis to the standards and stakes of your sector.</p>
+            <div class="industries-grid">
+                <div class="industry-card">
+                    <h4>Mining</h4>
+                    <p>Rehabilitation, reclamation and tailings monitoring, enhanced rock weathering.</p>
+                </div>
+                <div class="industry-card">
+                    <h4>Oil &amp; Gas</h4>
+                    <p>Methane and fugitive emissions monitoring.</p>
+                </div>
+                <div class="industry-card">
+                    <h4>CCUS</h4>
+                    <p>Hotspot and transient flux monitoring for leak detection at carbon injection wells.</p>
+                </div>
+                <div class="industry-card">
+                    <h4>Nature-Based Solutions</h4>
+                    <p>Additionality and permanence evidence, credit MRV for carbon markets.</p>
+                </div>
+                <div class="industry-card">
+                    <h4>Academic</h4>
+                    <p>Proposal support, instrumentation design, and publishable data standards.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -117,6 +147,14 @@
                 menu.classList.remove('open');
                 toggle.classList.remove('open');
                 toggle.setAttribute('aria-expanded', false);
+            });
+        });
+
+        document.querySelectorAll('[data-service]').forEach(link => {
+            link.addEventListener('click', () => {
+                gtag('event', 'service_click', {
+                    service_name: link.dataset.service
+                });
             });
         });
     </script>

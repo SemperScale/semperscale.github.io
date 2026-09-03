@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - SemperScale</title>
+    <meta name="description" content="Get in touch with SemperScale to discuss your eddy covariance flux tower project.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/jpeg" href="photos/flavicon.png">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DHD9K9PDWL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-DHD9K9PDWL');
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo"><img src="photos/flavicon.png" alt="SemperScale"></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul id="nav-menu">
+                <li><a href="index.html#overview">Overview</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero hero-compact">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>Ready to discuss your project? Drop us a line.</p>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact">
+        <div class="container">
+            <div class="contact-container">
+                <p>Whether you're scoping a new deployment or need help with an existing one, we look forward to hearing from you.</p>
+                <a href="mailto:semperscale@gmail.com" class="contact-email-link">semperscale@gmail.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 SemperScale. All rights reserved.</p>
+        </div>
+    </footer>
+    <script>
+        const toggle = document.querySelector('.nav-toggle');
+        const menu = document.getElementById('nav-menu');
+
+        toggle.addEventListener('click', () => {
+            const open = menu.classList.toggle('open');
+            toggle.classList.toggle('open', open);
+            toggle.setAttribute('aria-expanded', open);
+        });
+
+        menu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.remove('open');
+                toggle.classList.remove('open');
+                toggle.setAttribute('aria-expanded', false);
+            });
+        });
+    </script>
+</body>
+</html>
