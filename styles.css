@@ -258,11 +258,13 @@ section > .container > p:first-of-type {
 }
 
 .service-card {
+    display: block;
     background: white;
     border-radius: 1rem;
     padding: 2rem;
     border: 1px solid var(--border);
     transition: all 0.3s;
+    text-decoration: none;
 }
 
 .service-card:hover {
@@ -280,23 +282,13 @@ section > .container > p:first-of-type {
     font-size: 1.3rem;
     margin-bottom: 1rem;
     color: var(--primary);
+    text-decoration: none;
 }
 
 .service-card p {
     color: #64748B;
     line-height: 1.7;
-}
-
-.service-card a.card-link {
-    display: inline-block;
-    margin-top: 1rem;
-    font-weight: 600;
-    color: var(--primary);
     text-decoration: none;
-}
-
-.service-card a.card-link:hover {
-    text-decoration: underline;
 }
 
 /* Industries Grid (services page) */
