@@ -143,6 +143,7 @@ nav a.active {
 
 .hero p {
     font-size: 1.3rem;
+    font-weight: 600;
     margin-bottom: 2rem;
     opacity: 1;
     color: white;
