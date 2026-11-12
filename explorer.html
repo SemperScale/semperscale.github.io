@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NBS Explorer - SemperScale</title>
+    <meta name="description" content="Interactive explorer of the potential of eddy covariance MRV for nature-based solutions projects.">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/jpeg" href="photos/flavicon_small.png">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DHD9K9PDWL"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-DHD9K9PDWL');
+    </script>
+</head>
+<body style="display:flex;flex-direction:column;height:100vh;overflow:hidden;">
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <a href="index.html" class="logo"><img src="photos/flavicon.png" alt="SemperScale"></a>
+            <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul id="nav-menu">
+                <li><a href="index.html#overview">Overview</a></li>
+                <li><a href="services.html">Services</a></li>
+                <li><a href="about.html" >About</a></li>
+                <li><a href="explorer.html" class="active">NBS Explorer</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <iframe id="app" src="explorer-app.html?v=3" title="NBS Explorer" style="display:block;flex:1;width:100%;min-height:0;border:0;"></iframe>
+    <script>
+        const toggle = document.querySelector('.nav-toggle');
+        const menu = document.getElementById('nav-menu');
+        toggle.addEventListener('click', () => {
+            const open = menu.classList.toggle('open');
+            toggle.classList.toggle('open', open);
+            toggle.setAttribute('aria-expanded', open);
+        });
+    </script>
+</body>
+</html>

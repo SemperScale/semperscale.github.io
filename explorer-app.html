@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Potential of eddy covariance MRV for NBS projects</title>
+  <style>
+    :root {
+      --bg: #ffffff; --track: #E3DCCF; --grid: #EFE9DE; --grid2: #E3DCCF; --axis0: #b9ae9c; --glow1: transparent; --glow2: transparent; --hero2: #F7F3EC; --card: #ffffff; --ink: #16232F; --ink2: #2A3138; --ink3: #6f7780;
+      --line: #E3DCCF; --soft: #F7F3EC;
+      --ec: #2C4A63; --inv: #B8703E; --accent: #2C4A63; --edit: #2f7d56; --you: #16232F; --bad: #d62728;
+      --shadow: 0 1px 2px rgba(20,24,31,.04), 0 8px 24px -8px rgba(20,24,31,.10);
+      --radius: 16px;
+    }
+    * { box-sizing: border-box; }
+    html { background: var(--bg); }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0; padding: 0 0 4rem; color: var(--ink); max-width: none;
+      background:
+        radial-gradient(900px 420px at 8% -8%, var(--glow1), transparent 60%),
+        radial-gradient(800px 380px at 100% 0%, var(--glow2), transparent 60%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 1280px; margin: 0 auto; padding: 3.5rem 2rem 0; }
+    h1 {
+      margin: 0; font-size: clamp(1.9rem, 3.4vw, 2.7rem); line-height: 1.1; font-weight: 750; letter-spacing: -0.03em;
+      color: var(--ink);
+    }
+    .intro { line-height: 1.6; font-size: 1.02rem; color: var(--ink2); margin: 0.8rem 0 0; }
+    .hero { padding: 1.4rem 1.6rem 1.5rem; margin-bottom: 1.5rem; display: grid; grid-template-columns: 1fr minmax(220px, 290px); gap: 2rem; align-items: center; }
+    .hero-fig svg { width: 100%; height: auto; display: block; }
+    .hero-fig text { font-family: inherit; }
+
+    .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .controls-card { padding: 1.4rem 1.6rem; }
+    /* left column: ecosystem + pool bar; right: 2x2 grid of sliders */
+    .ctl-layout { display: grid; grid-template-columns: minmax(230px, 1fr) 2fr; gap: 2rem; }
+    .ctl-eco { padding-right: 2rem; border-right: 1px solid var(--line); }
+    .ctl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 2rem; align-content: center; }
+    .control { min-width: 0; }
+    .pool-title { margin: 1.1rem 0 .45rem; font-size: 0.72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; color: var(--ink3); }
+    #poolbar .bar { display: flex; height: 12px; border-radius: 99px; overflow: hidden; background: var(--soft); }
+    #poolbar .bar span { display: block; height: 100%; }
+    #poolbar .leg { display: grid; grid-template-columns: 1fr 1fr; gap: .2rem .8rem; margin-top: .6rem; font-size: 0.8rem; color: var(--ink2); }
+    #poolbar .leg i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: .35rem; }
+    #poolbar .leg b { font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .control label { display: block; margin-bottom: 0.6rem; font-size: 0.85rem; color: var(--ink2); font-weight: 500; }
+    .control label b { color: var(--ink); font-size: 1.05rem; font-weight: 700; font-variant-numeric: tabular-nums; margin-left: .15rem; }
+    #het_towers { color: var(--ink3); }
+
+    input[type=range] {
+      -webkit-appearance: none; appearance: none; width: 100%; height: 22px; background: transparent; cursor: pointer; margin: 0;
+      --pct: 50%;
+    }
+    input[type=range]::-webkit-slider-runnable-track {
+      height: 6px; border-radius: 99px;
+      background: linear-gradient(90deg, var(--accent) var(--pct), var(--track) var(--pct));
+    }
+    input[type=range]::-moz-range-track { height: 6px; border-radius: 99px; background: var(--track); }
+    input[type=range]::-moz-range-progress { height: 6px; border-radius: 99px; background: var(--accent); }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none; width: 20px; height: 20px; margin-top: -7px; border-radius: 50%;
+      background: var(--card); border: 2px solid var(--accent); box-shadow: 0 2px 6px rgba(20,24,31,.22); transition: transform .12s, box-shadow .12s;
+    }
+    input[type=range]::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%; background: var(--card); border: 2px solid var(--accent); box-shadow: 0 2px 6px rgba(20,24,31,.22);
+    }
+    input[type=range]:hover::-webkit-slider-thumb { transform: scale(1.12); }
+    .intro .hl-inv { color: var(--inv); }
+    .intro .hl-ec { color: var(--ec); }
+
+    input[type=range]:focus-visible { outline: none; }
+    input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent); }
+
+    select {
+      appearance: none; -webkit-appearance: none;
+      width: 100%; padding: 0.55rem 2.2rem 0.55rem 0.85rem;
+      font: inherit; font-weight: 600; color: var(--ink); background-color: var(--soft); cursor: pointer;
+      border: 1px solid var(--line); border-radius: 10px; transition: border-color .15s, background-color .15s, box-shadow .15s;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%2352514e' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 0.85rem center;
+    }
+    select:hover { border-color: #b9c0cf; background-color: var(--card); }
+    select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent); background-color: var(--card); }
+
+    .results { margin-top: 1.25rem; overflow: hidden; }
+    .results .panel { background: none; border: 0; box-shadow: none; border-radius: 0; }   /* charts sit flat inside the one bubble */
+    .results .charts { margin-top: 0; padding: 0.4rem 0.6rem 0.2rem; gap: 0.5rem; }
+    .results .charts + .charts { border-top: 1px solid var(--line); }
+    .headline { padding: 1.1rem 1.6rem; border-bottom: 1px solid var(--line); }
+    .headline .big { font-size: clamp(1.3rem, 2.4vw, 1.8rem); font-weight: 750; letter-spacing: -0.02em; line-height: 1.2; }
+    .headline .sub { margin-top: .35rem; font-size: 0.93rem; color: var(--ink2); }
+    .charts { margin-top: 1.5rem; display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: stretch; }
+    /* widths proportional to the viewBox widths (640 : 540), so both charts scale equally and match in height */
+    .charts .wide { flex: 640 1 0; min-width: 400px; }
+    .charts .narrow { flex: 540 1 0; min-width: 340px; }
+    .charts .panel { padding: 1rem 1rem 0.6rem; }
+    svg { width: 100%; height: auto; display: block; overflow: visible; }
+    svg text { font-family: inherit; }
+    #bars text, .legend text { font-size: 14px; fill: var(--ink2); }
+    #bars text.val { fill: var(--ink); font-weight: 600; font-size: 11px; stroke: var(--card); stroke-width: 3px; paint-order: stroke; }
+    #bars text.net { font-size: 18px; fill: var(--ink); font-weight: 700; }
+    #bars text.grp { font-size: 15px; fill: var(--ink); font-weight: 600; }
+    .axis text { font-size: 14px; fill: var(--ink2); }
+    #chart polyline { stroke-linejoin: round; stroke-linecap: round; }
+    #bars rect { transition: opacity .15s; }
+
+    /* TEST charts (experimental): delete this block, the .tests markup and the three draw functions to remove them */
+    .ctitle { font-size: 0.95rem; font-weight: 650; color: var(--ink); margin: 0.1rem 0 0.5rem 0.4rem; }
+    .vlab { font-size: 11px; fill: var(--ink); font-weight: 600; stroke: var(--card); stroke-width: 3px; paint-order: stroke; }
+    .lab { font-size: 14px; fill: var(--ink2); }
+    .lab.sel { fill: var(--ink); font-weight: 700; }
+
+    details.folder { margin: 1.25rem 0 0; padding: 0; overflow: hidden; }
+    details.folder > summary {
+      list-style: none; cursor: pointer; font-weight: 650; font-size: 1.05rem; padding: 1.05rem 1.4rem;
+      display: flex; align-items: center; gap: .75rem; user-select: none; transition: background .15s;
+    }
+    details.folder > summary::-webkit-details-marker { display: none; }
+    details.folder > summary::before {
+      content: ""; width: 8px; height: 8px; border-right: 2px solid var(--ink3); border-bottom: 2px solid var(--ink3);
+      transform: rotate(-45deg); transition: transform .2s; margin: 0 .25rem 0 .1rem;
+    }
+    details.folder[open] > summary::before { transform: rotate(45deg); }
+    details.folder > summary:hover { background: var(--soft); }
+    details.folder[open] > summary { border-bottom: 1px solid var(--line); }
+    details.folder > div, details.folder > ul { animation: fade .25s ease; }
+    @keyframes fade { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+    #assumptions li::marker { color: var(--accent); }
+
+    #model_details { margin: 0; padding: .4rem 1.4rem 1.3rem; font-size: 0.93rem; line-height: 1.6; color: var(--ink2); }
+    #model_details h4 {
+      margin: 1.4rem 0 0.5rem; font-size: 0.75rem; color: var(--accent); text-transform: uppercase; letter-spacing: 0.09em; font-weight: 700;
+    }
+    #model_details ul { margin: 0.25rem 0; padding-left: 1.2rem; }
+    #model_details li { margin: .25rem 0; }
+    #model_details p { margin: 0.45rem 0; color: var(--ink2); }
+    #model_details .eq {
+      margin: 0.45rem 0; padding: 0.6rem 0.9rem; background: var(--soft); border-left: 3px solid var(--accent);
+      border-radius: 4px 10px 10px 4px; font-family: ui-serif, "Iowan Old Style", Georgia, serif; font-size: 1.02rem; color: var(--ink); overflow-x: auto;
+    }
+
+    .folder-note { margin: 0; padding: 1.1rem 1.4rem 1rem; font-size: 0.93rem; line-height: 1.6; color: var(--ink2); border-bottom: 1px solid var(--line); }
+    /* Additional parameters sits inside the controls card as a full-width footer strip */
+    .controls-card > details.folder { margin: 1.5rem -1.6rem -1.4rem; border-top: 1px solid var(--line); }
+    #params { margin: 0; padding: .6rem 1.4rem 1.1rem; }
+    #params details { margin: 0.4rem 0; border-bottom: 1px solid var(--line); padding-bottom: .4rem; }
+    #params details:last-child { border-bottom: 0; }
+    #params summary { font-size: 0.78rem; color: var(--ink2); text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; cursor: pointer; padding: .55rem 0; }
+    #params summary:hover { color: var(--accent); }
+    #params table { table-layout: fixed; border-collapse: collapse; width: 100%; font-size: 0.92rem; margin-bottom: .4rem; }
+    #params td { padding: 6px 0; border-top: 1px solid var(--soft); }
+    #params th:nth-child(1) { width: 34%; }   /* fixed column widths so Value and Reference line up across all three tables */
+    #params th:nth-child(2) { width: 36%; }
+    #params th { text-align: left; font-weight: 600; font-size: 0.72rem; color: var(--ink3); text-transform: uppercase; letter-spacing: .06em; padding-bottom: 4px; border-bottom: 1px solid var(--line); }
+    #params th:nth-child(2), #params td:nth-child(2) { text-align: right; font-variant-numeric: tabular-nums; padding-right: 1.5rem; }
+    #params td.val { cursor: text; border-radius: 6px; transition: background .12s; font-weight: 550; }
+    #params td.val:hover { background: color-mix(in srgb, var(--edit) 12%, transparent); }
+    #params td.pair { text-align: right; padding-right: 1.5rem; white-space: nowrap; font-variant-numeric: tabular-nums; }
+    #params td.pair .cell-edit { width: 4.5em; }
+    #params span.val { cursor: text; border-radius: 6px; padding: 1px 4px; font-weight: 550; transition: background .12s; }
+    #params span.val:hover { background: color-mix(in srgb, var(--edit) 12%, transparent); }
+    #params span.val.edited { color: var(--edit); font-weight: 700; background: color-mix(in srgb, var(--edit) 12%, transparent); }
+    #params td.val.edited { color: var(--edit); font-weight: 700; background: color-mix(in srgb, var(--edit) 12%, transparent); }
+    #params td.total { text-align: right; padding-right: 1.5rem; font-weight: 600; }
+    #params td.total.bad { color: var(--bad); }
+    #params .cell-edit { width: 6.5em; font: inherit; text-align: right; padding: 2px 6px; border: 1px solid var(--edit); border-radius: 6px; outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--edit) 18%, transparent); }
+    #params td.ref { color: var(--ink2); font-size: 0.85rem; }
+    #params a, #model_details a { color: var(--ec); text-decoration: none; border-bottom: 1px solid rgba(44,74,99,.3); }
+    #params a:hover { border-bottom-color: var(--ec); }
+
+    @media (max-width: 760px) {
+      .page { padding: 2rem 1rem 0; }
+      .hero { grid-template-columns: 1fr; }
+      .hero-fig { display: none; }
+      .ctl-layout, .ctl-grid { grid-template-columns: 1fr; }
+      .ctl-eco { padding-right: 0; border-right: 0; padding-bottom: 1.2rem; border-bottom: 1px solid var(--line); }
+      .charts .wide, .charts .narrow { min-width: 0; flex: 1 1 100%; }
+    }
+    .eyebrow { display: inline-flex; align-items: center; gap: .5rem; margin: 0 0 .9rem; padding: .3rem .75rem; border-radius: 99px;
+      font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 9%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); }
+    .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+    h1 { color: var(--primary, #2C4A63); }
+    .intro b { color: var(--ink); font-weight: 650; }
+    .intro b.hl-inv, .intro b.hl-ec { font-weight: 700; }
+    @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .hero, .controls-card, .results { animation: rise .55s cubic-bezier(.2,.7,.2,1) both; }
+    .controls-card { animation-delay: .08s; } .results { animation-delay: .16s; }
+    .hero { background: linear-gradient(135deg, var(--card) 55%, var(--hero2) 100%); }
+    .hero-fig svg { filter: drop-shadow(0 10px 18px rgba(20,24,31,.14)); border-radius: 8px; }
+
+    /* slider value pills + end labels */
+    .control label b { display: inline-block; padding: .08rem .55rem; border-radius: 99px; background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--accent);
+      font-family: "JetBrains Mono", ui-monospace, monospace; font-size: .92rem; font-weight: 600; margin-left: .3rem; }
+    .ends { display: flex; justify-content: space-between; margin-top: .1rem; font-size: .7rem; color: var(--ink3); font-variant-numeric: tabular-nums; }
+
+    /* hero result */
+    .headline { display: grid; grid-template-columns: 1fr auto; gap: 1.5rem; align-items: center; padding: 1.5rem 1.8rem; position: relative; overflow: hidden;
+      background: linear-gradient(110deg, var(--tint, #f4f5f8) 0%, var(--card) 70%); }
+    .headline::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--col, var(--ink3)); }
+    .hl-label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--ink3); }
+    .hl-num { font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 800; letter-spacing: -.035em; line-height: 1.05; margin: .15rem 0 .2rem; color: var(--col); font-variant-numeric: tabular-nums; }
+    .hl-text { font-size: .98rem; color: var(--ink2); }
+    .hl-tiles { display: flex; gap: .8rem; }
+    .tile { min-width: 130px; padding: .7rem .95rem; border-radius: 12px; background: var(--card); border: 1px solid var(--line); box-shadow: 0 1px 2px rgba(20,24,31,.04); }
+    .tile .k { display: flex; align-items: center; gap: .4rem; font-size: .7rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); }
+    .tile .k i { width: 8px; height: 8px; border-radius: 50%; }
+    .tile .v { margin-top: .25rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 1.25rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+    @media (max-width: 760px) { .headline { grid-template-columns: 1fr; } .hl-tiles { flex-wrap: wrap; } }
+
+    /* chart hover */
+    .chart-wrap { position: relative; }
+    .tip { position: absolute; pointer-events: none; opacity: 0; transition: opacity .12s; z-index: 5; min-width: 170px; padding: .6rem .75rem; border-radius: 10px;
+      background: rgba(20,24,31,.94); color: #fff; font-size: .78rem; line-height: 1.5; box-shadow: 0 8px 24px -6px rgba(0,0,0,.35); font-variant-numeric: tabular-nums; }
+    .tip .t { font-weight: 700; margin-bottom: .2rem; color: #c9cfdb; }
+    .tip i { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: .4rem; }
+    .tip { max-width: 290px; }
+    .tip .sep { border-top: 1px solid #3a4150; margin-top: .3rem; padding-top: .3rem; }
+    .tip .dim { color: #aab3c2; }
+    .tip .r { display: flex; justify-content: space-between; gap: 1rem; }
+
+    .hero { grid-template-columns: 1fr minmax(240px, 340px); }
+    .hero-fig figcaption, .hero-fig .cap { margin-top: .5rem; text-align: center; font-size: .72rem; color: var(--ink3); letter-spacing: .02em; }
+    .hero-fig { margin: 0; }
+    .ctitle::before { content: ""; display: inline-block; vertical-align: -.15em; width: 4px; height: 1.05em; border-radius: 2px; background: var(--accent); opacity: .55; margin-right: .55rem; }
+    #bars rect { transition: opacity .15s, y .25s, height .25s; }
+    
+.ctl-grid .wide { grid-column: 1 / -1; }
+    .control .sw { display: flex; align-items: center; gap: .7rem; margin: 0; cursor: pointer; }
+    .sw input { position: absolute; opacity: 0; pointer-events: none; }
+    .sw .track { position: relative; flex: none; width: 40px; height: 24px; border-radius: 99px; background: var(--track); transition: background .18s; }
+    .sw .track::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; box-shadow: 0 1px 4px rgba(20,24,31,.3); transition: transform .18s; }
+    .sw input:checked + .track { background: var(--accent); }
+    .sw input:checked + .track::after { transform: translateX(16px); }
+    .sw input:focus-visible + .track { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent); }
+    .sw-row { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; }
+    .sw-item { flex: 1 1 220px; min-width: 0; }
+    .sw-hint { margin: .35rem 0 0 calc(40px + .7rem); font-size: .78rem; color: var(--ink3); }
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; gap: 1.2rem; padding: 1.2rem 1.2rem 1.3rem; }
+      .hero-fig { display: block; max-width: 300px; margin: 0 auto; width: 100%; }
+      .headline { padding: 1.2rem 1.2rem 1.2rem 1.4rem; }
+      .hl-tiles { width: 100%; } .tile { flex: 1; min-width: 0; }
+      .chart-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .chart-wrap svg { min-width: 450px; }
+      .charts .panel { padding: .8rem .6rem .5rem; }
+    }
+
+    /* chart type scale: 14px for every axis, tick, legend, category and annotation label; 12px for data-value labels */
+    .chart-wrap svg text { font-size: 14px; }
+    .chart-wrap svg text.val, .chart-wrap svg text.vlab, #bars text.val { font-size: 12px; font-weight: 600; }
+    #bars text.grp { font-size: 14px; font-weight: 600; }
+    #bars text.net { font-size: 14px; font-weight: 700; }
+    .chart-wrap svg text.lab { font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="panel hero">
+  <div class="hero-text">
+  <h1>Eddy covariance MRV for NBS projects</h1>
+
+  <p class="intro">
+    <b class="hl-inv">Biomass inventory and soil core</b> MRV approaches face two fundamental problems:
+      1) high uncertainty and
+     2) failure to credit carbon outside sampled pools.
+     <b class="hl-ec">Eddy covariance towers</b> measure net carbon exchange continuously and directly, unlocking additional credits and increasing project returns.
+  </p>
+
+  <p class="intro">
+     In addition, eddy covariance provides continuous restoration monitoring for early-warning and comprehensive carbon cycling insights. 
+
+  </p>
+  <p class="intro">
+   This dashboard explores profitability of NBS projects using eddy covariance MRV compared to soil core + biomass inventory approaches.
+  </p>
+  </div>
+  <div class="hero-fig">
+    <svg viewBox="0 0 300 292" role="img" aria-label="Eddy covariance sees the whole ecosystem; biomass inventories and soil cores sample only part of the ecosystem">
+      <rect x="6" y="24" width="288" height="258" fill="#E6ECF1"/>
+      <rect x="6" y="178" width="288" height="104" fill="#4a2f20"/>
+      <polygon points="51,178 53,106 61,106 63,178" fill="#a9794b"/><circle cx="46" cy="92" r="20" fill="#2f7d56"/><circle cx="68" cy="88" r="20" fill="#2f7d56"/><circle cx="57" cy="76" r="19" fill="#2f7d56"/><path d="M51 178 Q44 220 37 262" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/><path d="M57 178 Q58 224 59 270" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/><path d="M63 178 Q70 218 77 258" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/>
+      <polygon points="237,178 239,106 247,106 249,178" fill="#a9794b"/><circle cx="232" cy="92" r="20" fill="#2f7d56"/><circle cx="254" cy="88" r="20" fill="#2f7d56"/><circle cx="243" cy="76" r="19" fill="#2f7d56"/><path d="M237 178 Q230 218 223 258" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/><path d="M243 178 Q242 224 241 270" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/><path d="M249 178 Q256 220 263 262" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/>
+      <polygon points="112,178 114,146 122,146 124,178" fill="#a9794b"/><ellipse cx="118" cy="134" rx="17" ry="15" fill="#3f9b6b"/><path d="M115 178 Q112 206 109 234" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/><path d="M121 178 Q124 203 127 228" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/>
+      <polygon points="176,178 178,146 186,146 188,178" fill="#a9794b"/><ellipse cx="182" cy="134" rx="17" ry="15" fill="#3f9b6b"/><path d="M179 178 Q176 203 173 228" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/><path d="M185 178 Q188 206 191 234" fill="none" stroke="#c9975f" stroke-width="2.4" stroke-linecap="round"/>
+      <line x1="150" y1="178" x2="150" y2="68" stroke="#4a5260" stroke-width="2.5"/>
+      <line x1="150" y1="78" x2="160" y2="78" stroke="#4a5260" stroke-width="2.5"/><rect x="160" y="73" width="6" height="10" rx="1" fill="#4a5260"/>
+      <rect x="14" y="44" width="128" height="120.6" rx="5" fill="none" stroke="#B8703E" stroke-width="3.5"/>
+      <rect x="158" y="190" width="128" height="22.03" rx="5" fill="none" stroke="#B8703E" stroke-width="3.5"/>
+      <rect x="6" y="24" width="288" height="258" rx="6" fill="none" stroke="#2C4A63" stroke-width="4.5"/>
+      <rect x="14" y="33" width="128" height="22" rx="11" fill="#B8703E"/><text x="78" y="48.5" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">biomass inventory</text>
+      <rect x="178" y="201" width="88" height="22" rx="11" fill="#B8703E"/><text x="222" y="216.5" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">soil cores</text>
+      <rect x="160" y="13" width="124" height="22" rx="11" fill="#2C4A63"/><text x="222.0" y="28.5" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">eddy covariance</text>
+    </svg>
+  </div>
+  </div>
+
+  <div class="panel controls-card">
+  <div class="ctl-layout">
+  <div class="ctl-eco control">
+    <label for="eco">Ecosystem type</label>
+    <select id="eco"></select>
+    <div class="pool-title">New carbon allocation</div>
+    <div id="poolbar"></div>
+  </div>
+  <div class="ctl-grid">
+  <div class="control">
+    <label>Landscape heterogeneity: <b id="het_val"></b> <span id="het_towers"></span></label>
+    <input id="het" type="range" min="1" max="5" step="1" value="3">  <!-- each step adds one project EC tower -->
+    <div class="ends"><span>Uniform</span><span>Patchy</span></div>
+  </div>
+  <div class="control">
+    <label>Project size: <b id="size_val"></b> ha</label>
+    <input id="size" type="range" min="0" max="16" step="1" value="8">  <!-- index into SIZES (round values, 500 to 200,000 ha) -->
+    <div class="ends"><span>500</span><span>200,000</span></div>
+  </div>
+  <div class="control">
+    <label>Credit price: <b id="price_val"></b> $/t CO2e</label>
+    <input id="price" type="range" min="10" max="50" step="5" value="30">
+    <div class="ends"><span>$10</span><span>$50</span></div>
+  </div>
+  <div class="control">
+    <label>C stock change: <b id="c_val"></b> t CO2e/ha/yr</label>
+    <input id="c" type="range" min="0.5" max="15" step="0.5" value="7.5">
+    <div class="ends"><span>0.5</span><span>15</span></div>
+  </div>
+  <div class="control wide sw-row">
+    <div class="sw-item">
+      <label class="sw" for="soil"><input id="soil" type="checkbox" checked><span class="track"></span>
+        <span class="sw-text">Soil coring: <b id="soil_state">On</b></span></label>
+      <div class="sw-hint" id="soil_hint"></div>
+    </div>
+    <div class="sw-item">
+      <label class="sw" for="litter"><input id="litter" type="checkbox"><span class="track"></span>
+        <span class="sw-text">Count litter: <b id="litter_state">Off</b></span></label>
+      <div class="sw-hint" id="litter_hint"></div>
+    </div>
+  </div>
+  </div>
+  </div>
+
+  <details class="folder">
+    <summary>Additional parameters</summary>
+    <p class="folder-note">Values are based on literature review of peer-reviewed scientific articles, carbon credit protocols, and IPCC carbon pool reports. Where values are not available, we make best-guesses and use conservative values. All parameters are editable by users to tailor to your specific project.</p>
+    <div id="params"></div>
+  </details>
+  </div>
+
+  <div class="panel results">
+  <div class="headline" id="headline"></div>
+
+  <div class="charts">
+    <div class="wide panel"><div class="ctitle">Net profit across C stock change rates at <span id="chart_title_ha"></span> hectares</div><div class="chart-wrap"><svg id="chart" viewBox="0 0 640 380"></svg><div class="tip" id="chart_tip"></div></div></div>
+    <div class="narrow panel">
+      <div class="ctitle">Credits &amp; costs at <span id="bars_title_c"></span> t CO2e/ha/yr</div>
+      <div class="chart-wrap"><svg id="bars" viewBox="0 0 540 380"></svg><div class="tip"></div></div>
+    </div>
+  </div>
+
+  <div class="charts tests">
+    <div class="wide panel"><div class="ctitle">Model sensitivity to main parameters</div><div class="chart-wrap"><svg id="t_tornado" viewBox="0 0 640 380"></svg><div class="tip"></div></div></div>
+    <div class="narrow panel"><div class="ctitle">Profitability of EC vs. inventory</div><div class="chart-wrap"><svg id="t_map" viewBox="0 0 540 380"></svg><div class="tip"></div></div></div>
+  </div>
+  </div>
+
+
+
+  <details class="folder panel">
+    <summary>Modeling details &amp; assumptions</summary>
+    <div id="model_details">
+      <h4>Notation</h4>
+      <ul>
+        <li><i>T</i>: project window, 10 years; <i>A</i>: project size (ha); <i>p</i>: credit price ($/t CO<sub>2</sub>e)</li>
+        <li><i>C</i>: carbon stock change over the project window (t CO<sub>2</sub>e/ha) = annual rate &times; <i>T</i> </li>
+        <li><i>f</i><sub>above</sub>, <i>f</i><sub>roots</sub>, <i>f</i><sub>soilC</sub>, <i>f</i><sub>litter</sub>, <i>f</i><sub>leak</sub>: fractions of <i>C</i> change in each pool by ecosystem</li>
+        <li><i>d</i><sub>shallow</sub>: share of belowground carbon (roots + soil) that is shallow, i.e. sampled by soil cores; <i>f</i><sub>shallow</sub> = (<i>f</i><sub>roots</sub> + <i>f</i><sub>soilC</sub>)&middot;<i>d</i><sub>shallow</sub>; <i>f</i><sub>deep</sub>: the remaining (<i>f</i><sub>roots</sub> + <i>f</i><sub>soilC</sub>)(1 &minus; <i>d</i><sub>shallow</sub>) is deep and unsampled</li>
+        <li><i>u</i><sub>bio</sub>, <i>u</i><sub>soil</sub>: uncertainty deductions of biomass plots and soil cores; <i>a</i>, <i>b</i>: EC uncertainty coefficients</li>
+      </ul>
+
+      <h4>Inventory (biomass plots and soil cores)</h4>
+      <div class="eq">credits<sub>inv</sub> = <i>C</i> &middot; [ <i>f</i><sub>above</sub>(1 &minus; <i>u</i><sub>bio</sub>) + <i>f</i><sub>shallow</sub>(1 &minus; <i>u</i><sub>soil</sub>) + [ <i>f</i><sub>litter</sub>(1 &minus; <i>u</i><sub>litter</sub>) if litter is counted ] ]&nbsp;&nbsp;(t CO<sub>2</sub>e/ha)</div>
+      <div class="eq">cost<sub>inv</sub> = <i>n</i><sub>surveys</sub> &middot; <i>n</i><sub>plots</sub> &middot; ( <i>n</i><sub>cores</sub> &middot; <i>c</i><sub>core</sub> + <i>c</i><sub>biomass</sub> )</div>
+      <p>If &ldquo;Soil coring in inventory&rdquo; is switched off, only aboveground biomass is measured: shallow belowground carbon earns no credits and coring costs drop out.</p>
+      <p>Only aboveground carbon and shallow belowground carbon (roots + soil sampled by cores) are measured. Deep belowground carbon and leakage earn no credits. Litter earns credits only if &ldquo;Count litter&rdquo; is switched on (in the controls above); no extra cost is added for it.</p>
+
+      <h4>Eddy covariance</h4>
+      <div class="eq"><i>u</i><sub>EC</sub> = <i>a</i> + <i>b</i> &middot; <i>C</i>&nbsp;&nbsp;(t CO<sub>2</sub>e/ha deducted)</div>
+      <div class="eq">credits<sub>EC</sub> = max( <i>C</i> &middot; (1 &minus; <i>f</i><sub>leak</sub>) &minus; <i>u</i><sub>EC</sub>, 0 )&nbsp;&nbsp;(t CO<sub>2</sub>e/ha)</div>
+      <div class="eq">cost<sub>EC</sub> = ( capex + opex &middot; <i>T</i> ) &middot; ( <i>n</i><sub>towers</sub> + <i>n</i><sub>baseline</sub> )</div>
+      <p>The tower sees net exchange of all pools, so deep soil and litter are included. Only leakage and the uncertainty deduction are removed.</p>
+      <p><i>n</i><sub>towers</sub> equals the landscape heterogeneity slider (1&ndash;5): a patchier landscape needs one more project tower per level. <i>n</i><sub>baseline</sub> is fixed at 1.</p>
+
+      <h4>Assumptions</h4>
+      <ul id="assumptions">
+        <li>The project window is 10 years.</li>
+        <li>EC tower uncertainty scales with net ecosystem exchange according to FLUXNET data (&rho; = 0.09).</li>
+        <li>Spatial scaling via modeling or remote sensing is not incorporated.</li>
+        <li>Additional biomass surveys (e.g. lidar) not considered.</li>
+        <li>Not based on any specific protocols, as they can change rapidly; this serves as a scoping study.</li>
+      </ul>
+
+    </div>
+  </details>
+
+  <script>
+    // ---- Fixed parameters (from the R model; nothing here changes yet) ----
+    const P = {
+      cost_biomass: 300, cost_core: 300,          // $ per plot / per core
+      capex: 80000, opex: 30000,                  // $ per tower, $/yr
+      plots: 30, cores: 4, surveys: 3,
+      towers: 1, baselines: 1,
+      soil_cores: 1,                              // toggle in the controls: 0 = inventory samples biomass plots only, no soil cores
+      u_soil: 0.2, u_biomass: 0.1,
+      litter_in_inv: 0, u_litter: 0.2,            // optional: also count litter in the inventory (no added cost, for simplicity)
+      u_ec_a: 2.1, u_ec_b: 0.013,                 // EC deduction = a + b * C_change
+      frac_above: 0, frac_roots: 0, frac_soilc: 0, frac_shallow: 0, frac_litter: 0, frac_leakage: 0,   // set from ECOSYSTEMS below
+    };
+    // Fractions of C change in each pool (above + roots + soil C + litter + leakage = 1). Hand-set numbers, edit freely in the table.
+    // frac_shallow is separate (not part of the sum): the share of belowground C (soil + roots) that is shallow, i.e. sampled by soil cores;
+    // the rest is deep and seen only by the tower. The model uses shallow = (roots + soil C) * frac_shallow and deep = (roots + soil C) * (1 - frac_shallow).
+    // Recipe for the vegetated rows: aboveground = B / (1 + R) and roots = B * R / (1 + R), where R is the root-shoot ratio (IPCC GPG LULUCF Table 3A.1.8; Jackson 1996 for cropland; van der Vyver & Cowling 2019 for Spekboom)
+    // (see ECO_R) and B is the live-biomass share of the net gain (assumed). Roots = B * R / (1 + R); soil C = what is left after B, litter and leakage. Litter (assumed) and leakage (5%, assumed) are fixed.
+    const ECOSYSTEMS = {
+      "Reforestation":              {frac_above: 0.528, frac_roots: 0.222, frac_soilc: 0.1, frac_shallow: 0.6, frac_litter: 0.10, frac_leakage: 0.05},
+      "Managed forest (broadleaf)": {frac_above: 0.516, frac_roots: 0.134, frac_soilc: 0.1, frac_shallow: 0.5, frac_litter: 0.20, frac_leakage: 0.05},
+      "Managed forest (conifer)":   {frac_above: 0.492, frac_roots: 0.158, frac_soilc: 0.1, frac_shallow: 0.5, frac_litter: 0.20, frac_leakage: 0.05},
+      "Savanna / woodland":         {frac_above: 0.203, frac_roots: 0.097, frac_soilc: 0.6, frac_shallow: 0.5, frac_litter: 0.05, frac_leakage: 0.05},
+      "Rangeland / semi-arid grassland": {frac_above: 0.053, frac_roots: 0.147, frac_soilc: 0.7, frac_shallow: 0.5, frac_litter: 0.05, frac_leakage: 0.05},
+      "Cropland":                   {frac_above: 0.018, frac_roots: 0.002, frac_soilc: 0.85, frac_shallow: 0.706, frac_litter: 0.08, frac_leakage: 0.05},   // R = 0.1 (Jackson 1996), B = 0.02 assumed (cropland gains come from soil management, not biomass)
+      "Temperate grassland":        {frac_above: 0.058, frac_roots: 0.092, frac_soilc: 0.75, frac_shallow: 0.53, frac_litter: 0.05, frac_leakage: 0.05},
+      "Peatland / wetland":         {frac_above: 0.049, frac_roots: 0.051, frac_soilc: 0.8, frac_shallow: 0.176, frac_litter: 0.05, frac_leakage: 0.05},
+      // Spekboom: R = 2.7 (van der Vyver & Cowling 2019); B = 0.80 assumed -> above = 0.80/3.7. Deep soil 14% from my earlier calc on Mills & Cowling 2006 (Krompoort), so frac_shallow = 1 - 0.14/below; litter 5% (user)
+      "Spekboom thicket":           {frac_above: 0.216, frac_roots: 0.584, frac_soilc: 0.1, frac_shallow: 0.795, frac_litter: 0.05, frac_leakage: 0.05},
+    };
+    // Root-shoot ratio R (mean, belowground / aboveground biomass), IPCC GPG LULUCF (2003) Table 3A.1.8, and the row used.
+    const IPCC_URL = "https://www.ipcc.ch/site/assets/uploads/2018/03/GPG_LULUCF_FULLEN.pdf";
+    const ECO_R = {
+      "Reforestation":               [0.42, "secondary tropical/sub-tropical forest, <125 t/ha"],
+      "Managed forest (broadleaf)":  [0.26, "other broadleaf forest, 75-150 t/ha"],
+      "Managed forest (conifer)":    [0.32, "conifer forest/plantation, 50-150 t/ha"],
+      "Savanna / woodland":          [0.48, "woodland/savanna"],
+      "Rangeland / semi-arid grassland": [2.80, "semi-arid grassland"],
+      "Temperate grassland":         [1.58, "temperate/sub-tropical/tropical grassland"],
+      "Peatland / wetland":          [1.04, "tidal marsh"],
+      "Cropland":                    [0.1, "cropland", "<a href='https://link.springer.com/article/10.1007/BF00333714'>Jackson et al. 1996</a>"],
+      "Spekboom thicket":            [2.7, "spekboom thicket", "<a href='https://doi.org/10.1016/j.foreco.2019.05.048'>van der Vyver & Cowling 2019</a>"],
+    };
+    const ecoRef = () => {
+      const r = ECO_R[$("eco").value];
+      return r ? (r[2] || `<a href='${IPCC_URL}'>IPCC GPG LULUCF 2003, Table 3A.1.8</a>.`) : "";
+    };
+    Object.assign(P, ECOSYSTEMS["Reforestation"]);
+
+    // User edits (double-click a value under Parameters). Pool fractions are remembered per ecosystem.
+    const P0 = {...P};                       // defaults for everything except the ecosystem pools
+    const OVR = {}, OVR_ECO = {};
+    const isPool = k => k.startsWith("frac_");
+    const defaultOf = k => isPool(k) ? ECOSYSTEMS[$("eco").value][k] : P0[k];
+    const isEdited = k => isPool(k) ? k in (OVR_ECO[$("eco").value] || {}) : k in OVR;
+    function setOverride(k, v) {
+      const store = isPool(k) ? (OVR_ECO[$("eco").value] ??= {}) : OVR;
+      if (Math.abs(v - defaultOf(k)) < 1e-12) delete store[k]; else store[k] = v;
+    }
+    // The sliders and x-axis are per-year rates; the model itself works on the total over the project window.
+    const YEARS = 10;                                                    // project window (years)
+    const C_GRID = Array.from({length: 75}, (_, i) => 0.2 * (i + 1));   // 0.2 .. 15 t CO2e/ha/yr
+
+    // ---- Model (port of credits / costs / totals) ----
+    const SIZES = [500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000, 15000, 20000, 30000, 50000, 75000, 100000, 150000, 200000];
+
+    function runModel(C_change, size_ha, price) {
+      const C_inventory = C_change * P.frac_above * (1 - P.u_biomass)
+                        + P.soil_cores * C_change * (P.frac_roots + P.frac_soilc) * P.frac_shallow * (1 - P.u_soil)
+                        + (P.litter_in_inv ? C_change * P.frac_litter * (1 - P.u_litter) : 0);
+      const u_ec_abs = P.u_ec_a + P.u_ec_b * C_change;
+      const C_EC = Math.max(C_change * (1 - P.frac_leakage) - u_ec_abs, 0);
+
+      const cost_inventory = P.soil_cores * P.cost_core * P.plots * P.cores * P.surveys + P.cost_biomass * P.plots * P.surveys;
+      const cost_EC = (P.capex + P.opex * 10) * (P.baselines + P.towers);
+
+      const net_EC = C_EC * size_ha * price - cost_EC;
+      const net_inventory = C_inventory * size_ha * price - cost_inventory;
+      const best = Math.max(net_EC, net_inventory) <= 0 ? "No viable project"
+                 : net_EC >= net_inventory ? "EC" : "Inventory";
+      return {C_change, net_EC, net_inventory, best};
+    }
+
+    // ---- Page ----
+    const $ = id => document.getElementById(id);
+    // axis tick labels: one number of decimals per axis, set by the tick step (whole millions when the step is a whole number of millions)
+    const fmtM = (v, step = 1e5) => {
+      const whole = Math.abs(step / 1e6 - Math.round(step / 1e6)) < 1e-9 && step >= 1e6;
+      return (v < 0 ? "-$" : "$") + Math.abs(v / 1e6).toFixed(whole ? 0 : step >= 1e5 ? 1 : step >= 1e4 ? 2 : 3) + "M";
+    };
+
+    // Headline: EC net profit minus inventory net profit at the selected settings (green = EC ahead, orange = EC behind).
+    const money = v => {   // $X.XM from a million up, otherwise rounded to $Xk (same rule as the hovers)
+      const a = Math.abs(v), k = Math.round(a / 1e3), sg = v < 0 && k > 0 ? "−" : "";
+      return k >= 1000 ? sg + "$" + (a / 1e6).toFixed(1) + "M" : k === 0 ? "$0" : sg + "$" + k + "k";
+    };
+    function drawHeadline(r, C_sel, size_ha, price) {
+      const diff = r.net_EC - r.net_inventory, ahead = diff > 0, tie = Math.abs(diff) < 0.5;
+      const col = tie ? "var(--ink3)" : ahead ? "var(--ec)" : "var(--inv)";
+      const tint = tie ? "var(--soft)" : ahead ? "color-mix(in srgb, var(--ec) 11%, var(--card))" : "color-mix(in srgb, var(--inv) 11%, var(--card))";
+      const el = $("headline");
+      el.style.setProperty("--col", col); el.style.setProperty("--tint", tint);
+      el.innerHTML =
+        `<div><div class="hl-label">EC advantage over inventory · ${YEARS}-year net profit</div>`
+        + `<div class="hl-num" id="hl_num">${tie ? "$0" : (ahead ? "+" : "−") + money(Math.abs(diff))}</div>`
+        + `</div>`
+        + `<div class="hl-tiles"><div class="tile"><div class="k"><i style="background:#2C4A63"></i>Eddy covariance</div><div class="v">${money(r.net_EC)}</div></div>`
+        + `<div class="tile"><div class="k"><i style="background:#B8703E"></i>Inventory</div><div class="v">${money(r.net_inventory)}</div></div></div>`;
+    }
+
+    // Mini stacked bar: how the selected ecosystem splits new carbon across pools (follows edits in the table).
+    const POOLS = [["frac_above", "Aboveground", "#3f9b6b"], ["frac_roots", "Roots", "#a9794b"], ["frac_soilc", "Soil carbon", "#6b4f3a"],
+                   ["frac_litter", "Litter", "#d1b94f"], ["frac_leakage", "Leakage", "#b4bac6"]];
+    function drawPoolBar() {
+      $("poolbar").innerHTML = `<div class="bar">${POOLS.map(([k, , c]) => `<span style="width:${P[k] * 100}%;background:${c}"></span>`).join("")}</div>`
+        + `<div class="leg">${POOLS.map(([k, n, c]) => `<div><i style="background:${c}"></i>${n} <b>${+(P[k] * 100).toFixed(1)}%</b></div>`).join("")}</div>`;
+    }
+
+    function paintSliders() {
+      document.querySelectorAll("input[type=range]").forEach(r => {
+        r.style.setProperty("--pct", ((r.value - r.min) / (r.max - r.min) * 100) + "%");
+      });
+    }
+    function update() {
+      paintSliders();
+      Object.assign(P, P0, ECOSYSTEMS[$("eco").value], OVR, OVR_ECO[$("eco").value] || {});
+      P.litter_in_inv = $("litter").checked ? 1 : 0;
+      $("litter_state").textContent = P.litter_in_inv ? "On" : "Off";
+      $("litter_hint").textContent = P.litter_in_inv ? "Litter carbon earns inventory credits (no added survey cost)." : "Litter carbon is not counted in the inventory.";
+      P.soil_cores = $("soil").checked ? 1 : 0;
+      $("soil_state").textContent = P.soil_cores ? "On" : "Off";
+      $("soil_hint").textContent = P.soil_cores ? "Inventory samples soil cores as well as biomass plots." : "Inventory measures aboveground biomass only: no soil or root credits, no coring cost.";
+      P.towers = +$("het").value;                 // patchier landscape: one more project tower per level
+      $("het_val").textContent = P.towers;
+      $("het_towers").textContent = `(${P.towers} EC tower${P.towers > 1 ? "s" : ""})`;
+      renderParams();
+      drawPoolBar();
+      const size_ha = SIZES[+$("size").value];
+      const price = +$("price").value;
+      $("size_val").textContent = size_ha.toLocaleString();
+      $("chart_title_ha").textContent = size_ha.toLocaleString();
+      $("price_val").textContent = price;
+
+      const rows = C_GRID.map(rate => ({...runModel(rate * YEARS, size_ha, price), C_change: rate}));   // C_change = annual rate here
+      const C_sel = +$("c").value;
+      $("c_val").textContent = C_sel;
+      $("bars_title_c").textContent = C_sel;
+      drawHeadline(runModel(C_sel * YEARS, size_ha, price), C_sel, size_ha, price);
+      drawChart(rows, C_sel);
+      drawBars(C_sel * YEARS, size_ha, price);   // bars use the window total
+      drawMap(size_ha, price, C_sel); drawTornado(C_sel, size_ha, price);   // test charts
+    }
+
+    // Hover tooltips for the bar, sensitivity and heatmap charts. fn(x, y) gets viewBox coordinates and returns tooltip HTML (or null).
+    const HOV = {bars: [], tornado: null, map: null};
+    const dollars0 = v => (v < 0 ? "-$" : "$") + Math.round(Math.abs(v)).toLocaleString();
+    const fmM = money;   // every outcome in a hover uses the same rule as the headline
+    const signed = v => (v >= 0 ? "+" : "−") + fmM(Math.abs(v));
+    function bindHover(svgId, W, fn) {
+      const svg = $(svgId), tip = svg.parentNode.querySelector(".tip");
+      const hide = () => { tip.style.opacity = 0; svg.querySelectorAll(".hov").forEach(el => el.style.display = "none"); };
+      svg.addEventListener("mouseleave", hide);
+      svg.addEventListener("mousemove", e => {
+        const bb = svg.getBoundingClientRect(), k = bb.width / W;
+        const html = fn((e.clientX - bb.left) / k, (e.clientY - bb.top) / k);
+        if (!html) { hide(); return; }
+        tip.innerHTML = html;
+        const px = e.clientX - bb.left, py = e.clientY - bb.top;
+        tip.style.left = (px > bb.width * 0.55 ? px - tip.offsetWidth - 14 : px + 14) + "px";
+        tip.style.top = Math.max(0, Math.min(py + 14, bb.height - tip.offsetHeight)) + "px";
+        tip.style.opacity = 1;
+      });
+    }
+
+    // Shared by both charts so they look alike: same plot box, light gridlines, legend above the plot.
+    const FRAME = {H: 380, m: {t: 50, b: 74, l: 80, r: 10}};
+    function gridY(ticks, y, W, m, label) {
+      return ticks.map(v => {
+        const z = Math.abs(v) < 1e-9 * (Math.abs(ticks[ticks.length - 1]) + 1);
+        return `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" stroke="${z ? "var(--axis0)" : "var(--grid)"}"/>`
+             + `<text x="${m.l - 8}" y="${y(v) + 5}" text-anchor="end" fill="var(--ink2)">${z ? "$0" : label(v)}</text>`;
+      }).join("");
+    }
+    function legendSvg(items) {
+      let lx = 10, out = `<g class="legend">`;
+      items.forEach(([name, col, shape]) => {
+        out += shape === "ring"
+          ? `<circle cx="${lx + 6}" cy="20" r="5" fill="none" stroke="${col}" stroke-width="2.5"/><text x="${lx + 17}" y="25">${name}</text>`
+          : `<rect x="${lx}" y="14" width="12" height="12" fill="${col}" rx="2"/><text x="${lx + 17}" y="25">${name}</text>`;
+        lx += 17 + name.length * 7.3 + 12;
+      });
+      return out + `</g>`;
+    }
+
+    // Waterfall at one C change, per method: credits before uncertainty -> minus uncertainty
+    // deductions -> minus cost -> net profit (bars chain, so the pieces sum exactly to net).
+    const fmtK = v => v >= 1e6 ? "$" + (v / 1e6).toFixed(v >= 1e7 ? 0 : 1) + "M"
+                    : v >= 1e3 ? "$" + Math.round(v / 1e3) + "k" : "$" + Math.round(v);
+    const fmtS = v => (v < 0 ? "-" : "") + fmtK(Math.abs(v));
+    function drawBars(C, size_ha, price) {
+      const usdPer = size_ha * price;
+      const lit = P.litter_in_inv ? 1 : 0;
+      const ded_inv = C * (P.frac_above * P.u_biomass + P.soil_cores * (P.frac_roots + P.frac_soilc) * P.frac_shallow * P.u_soil + lit * P.frac_litter * P.u_litter);
+      const seen_inv = C * P.frac_above * (1 - P.u_biomass) + P.soil_cores * C * (P.frac_roots + P.frac_soilc) * P.frac_shallow * (1 - P.u_soil) + lit * C * P.frac_litter * (1 - P.u_litter);
+      const u_ec = Math.min(P.u_ec_a + P.u_ec_b * C, C * (1 - P.frac_leakage));
+      const seen_ec = Math.max(C * (1 - P.frac_leakage) - (P.u_ec_a + P.u_ec_b * C), 0);
+      const cost_inv = P.soil_cores * P.cost_core * P.plots * P.cores * P.surveys + P.cost_biomass * P.plots * P.surveys;
+      const cost_ec = (P.capex + P.opex * 10) * (P.baselines + P.towers);
+      const M = [
+        {name: "Inventory", seen: seen_inv * usdPer, ded: ded_inv * usdPer, cost: cost_inv},
+        {name: "Eddy covariance", seen: seen_ec * usdPer, ded: u_ec * usdPer, cost: cost_ec},
+      ];
+      M.forEach(d => { d.gross = d.seen + d.ded; d.net = d.seen - d.cost; });
+      // each bar is [from, to] on the running total
+      const COLS = [
+        ["Credits", "#27a06a", d => [0, d.gross]],
+        ["Uncertainty deductions", "#e3a91a", d => [d.gross, d.seen]],
+        ["Cost", "#9aa1ae", d => [d.seen, d.net]],
+        ["Net profit", "var(--ink)", d => [0, d.net]],
+      ];
+
+      const W = 540, {H, m} = FRAME;
+      const all = M.flatMap(d => [d.gross, d.seen, d.net, 0]);
+      const lo = Math.min(...all), hi = Math.max(...all, 1);
+      const raw = ((hi - lo) || 1) / 4, pw = Math.pow(10, Math.floor(Math.log10(raw)));
+      const step = [1, 2, 5, 10].map(k => k * pw).find(v => v >= raw);
+      let y0 = Math.floor(lo / step) * step, y1 = Math.ceil(hi / step) * step;
+      if (y1 - hi < 0.10 * (y1 - y0)) y1 += step;                 // headroom for labels above the tallest bar
+      if (lo < 0 && lo - y0 < 0.18 * (y1 - y0)) y0 -= step;       // and below the lowest
+      const y = v => H - m.b - ((v - y0) / (y1 - y0 || 1)) * (H - m.t - m.b);
+      const gw = (W - m.l - m.r) / 2, bw = gw * 0.17, gap = gw * 0.03;
+
+      const bticks = [];
+      for (let v = y0; v <= y1 + step / 2; v += step) bticks.push(v);
+      let g = gridY(bticks, y, W, m, v => fmtM(v, step));
+      g += `<line x1="${m.l + gw}" x2="${m.l + gw}" y1="${m.t}" y2="${H - m.b + 56}" stroke="var(--grid2)" stroke-dasharray="3 3"/>`;
+      // Draw bars first, collecting them as obstacles; then place value labels so none overlap
+      // each other or a bar (try above or below the bar, always touching it).
+      const bars = [], labels = [];
+      HOV.bars = [];
+      M.forEach((d, gi) => {
+        const x0 = m.l + gi * gw + (gw - (4 * bw + 3 * gap)) / 2;
+        COLS.forEach(([name, col, f], bi) => {
+          const [a, b] = f(d), bx = x0 + bi * (bw + gap);
+          const top = y(Math.max(a, b)), bot = y(Math.min(a, b));
+          g += `<rect x="${bx}" y="${top}" width="${bw}" height="${Math.max(bot - top, 1)}" fill="${col}" rx="4"/>`;
+          bars.push({x0: bx, x1: bx + bw, y0: top, y1: Math.max(bot, top + 1)});
+          const val = name === "Cost" ? -d.cost : name === "Uncertainty deductions" ? -d.ded : b - a;
+          labels.push({text: fmtS(val), cx: bx + bw / 2, top, bot, below: b < a});
+          const t = v => Math.round(Math.abs(v) / price).toLocaleString() + " t CO2e";
+          const isEC = d.name !== "Inventory";
+          const body = name === "Credits"
+            ? `<div class="r"><span>Credits before deductions</span><b>${fmM(d.gross)}</b></div><div class="dim">${t(d.gross)} × $${price}/t over ${size_ha.toLocaleString()} ha</div>`
+            : name === "Uncertainty deductions"
+            ? `<div class="r"><span>Lost to uncertainty</span><b>−${fmM(d.ded)}</b></div><div class="dim">${t(d.ded)} withheld, ${d.gross > 0 ? Math.round(d.ded / d.gross * 100) : 0}% of gross credits</div>`
+            : name === "Cost"
+            ? `<div class="r"><span>MRV cost, ${YEARS} yr</span><b>−${fmM(d.cost)}</b></div><div class="dim">${isEC
+                ? `${P.baselines + P.towers} towers (${P.towers} project + ${P.baselines} control) × (${dollars0(P.capex)} capex + ${YEARS} yr × ${dollars0(P.opex)} opex)`
+                : P.soil_cores ? `${P.surveys} surveys × ${P.plots} plots × (${P.cores} cores × ${dollars0(P.cost_core)} + ${dollars0(P.cost_biomass)} biomass)` : `${P.surveys} surveys × ${P.plots} biomass plots × ${dollars0(P.cost_biomass)} (no soil cores)`}</div>`
+            : `<div class="r"><span>Net profit</span><b>${fmM(d.net)}</b></div><div class="dim">${fmM(d.seen)} credits after deductions − ${fmM(d.cost)} cost</div>`;
+          HOV.bars.push({x0: bx - gap / 2, x1: bx + bw + gap / 2, html: `<div class="t">${d.name} · ${name}</div>${body}`});
+        });
+        const cx = m.l + gi * gw + gw / 2;
+        g += `<text class="grp" x="${cx}" y="${H - m.b + 28}" text-anchor="middle">${d.name}</text>`;
+        g += `<text class="net" x="${cx}" y="${H - m.b + 51}" text-anchor="middle">Net ${fmtS(d.net)}</text>`;
+      });
+      const placed = [];
+      const hit = (r, o) => r.x0 < o.x1 && r.x1 > o.x0 && r.y0 < o.y1 && r.y1 > o.y0;
+      labels.forEach(L => {
+        const w = L.text.length * 6.8 + 4, rect = base => ({x0: L.cx - w / 2, x1: L.cx + w / 2, y0: base - 12, y1: base + 3});
+        const above = L.top - 6, below = L.bot + 14;
+        // always hug the bar: preferred side first, then the other side; never float away
+        const cands = L.below ? [below, above] : [above, below];
+        const ok = base => {
+          const r = rect(base);
+          return r.y0 >= m.t - 8 && base <= H - m.b + 8 && r.x0 >= 0 && r.x1 <= W
+              && !bars.some(o => hit(r, o)) && !placed.some(o => hit(r, o));
+        };
+        const base = cands.find(ok) ?? cands[0];
+        placed.push(rect(base));
+        g += `<text class="val" x="${L.cx}" y="${base}" text-anchor="middle">${L.text}</text>`;
+      });
+      g += legendSvg(COLS.map(([name, col]) => [name, col]));
+      $("bars").innerHTML = g;
+    }
+
+    function drawChart(rows, C_sel) {
+      const W = 640, {H, m} = FRAME;
+      const ys = rows.flatMap(r => [r.net_EC, r.net_inventory, 0]);
+      // nice tick step (1/2/5 x 10^k) so 0 is always a tick; axis spans whole steps
+      const lo = Math.min(...ys), hi = Math.max(...ys);
+      const raw = ((hi - lo) || 1) / 4, pw = Math.pow(10, Math.floor(Math.log10(raw)));
+      const step = [1, 2, 5, 10].map(k => k * pw).find(v => v >= raw);
+      const y0 = Math.floor(lo / step) * step, y1 = Math.ceil(hi / step) * step;
+      const ticks = [];
+      for (let v = y0; v <= y1 + step / 2; v += step) ticks.push(Math.abs(v) < step / 1e6 ? 0 : v);
+      const x = c => m.l + (c / 15) * (W - m.l - m.r);
+      const y = v => H - m.b - ((v - y0) / (y1 - y0 || 1)) * (H - m.t - m.b);
+      const line = (key, col) => `<polyline fill="none" stroke="${col}" stroke-width="3.5"
+        points="${rows.map(r => x(r.C_change) + "," + y(r[key])).join(" ")}"/>`;
+      // soft area fill between each line and the $0 baseline
+      const area = (key, id) => `<polygon fill="url(#${id})" points="${x(rows[0].C_change)},${y(0)} ${rows.map(r => x(r.C_change) + "," + y(r[key])).join(" ")} ${x(rows[rows.length - 1].C_change)},${y(0)}"/>`;
+      const defs = `<defs>`
+        + `<linearGradient id="gEC" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2C4A63" stop-opacity=".22"/><stop offset="1" stop-color="#2C4A63" stop-opacity="0"/></linearGradient>`
+        + `<linearGradient id="gINV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#B8703E" stop-opacity=".18"/><stop offset="1" stop-color="#B8703E" stop-opacity="0"/></linearGradient></defs>`;
+
+      let g = gridY(ticks, y, W, m, v => fmtM(v, step));
+      // selected C change (from the slider beside the chart): full-height red line labelled "Your project"
+      const sx = x(C_sel), left = sx + 8 + 96 > W - m.r;     // flip the label to the left near the right edge
+      g += `<line x1="${sx}" x2="${sx}" y1="${m.t}" y2="${H - m.b}" stroke="var(--you)" stroke-width="2.5" stroke-opacity=".75" stroke-dasharray="7 5"/>`;
+      const youLabel = `<text x="${sx + (left ? -8 : 8)}" y="${H - m.b - 10}" text-anchor="${left ? "end" : "start"}"
+              font-size="15" font-weight="600" fill="var(--you)" stroke="var(--card)" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Your project</text>`;   // drawn after the breakeven line so it sits on top
+      g += area("net_inventory", "gINV") + area("net_EC", "gEC");
+      g += line("net_inventory", "#B8703E") + line("net_EC", "#2C4A63");
+      // dots where the selected C rate meets each line
+      // interpolate between the two grid points around the slider value so the dots sit exactly on the dashed line
+      const hiI = Math.max(1, rows.findIndex(r => r.C_change >= C_sel)), r0 = rows[hiI - 1], r1 = rows[hiI];
+      const f = Math.max(0, Math.min(1, (C_sel - r0.C_change) / (r1.C_change - r0.C_change)));
+      const selRow = {C_change: C_sel, net_EC: r0.net_EC + f * (r1.net_EC - r0.net_EC), net_inventory: r0.net_inventory + f * (r1.net_inventory - r0.net_inventory)};
+      [["net_inventory", "#B8703E"], ["net_EC", "#2C4A63"]].forEach(([k, col]) => {
+        g += `<circle cx="${x(selRow.C_change)}" cy="${y(selRow[k])}" r="6" fill="var(--card)" stroke="${col}" stroke-width="3.5"/>`;
+      });
+      g += `<g id="xhair" style="display:none"><line id="xh_line" y1="${m.t}" y2="${H - m.b}" stroke="var(--ink)" stroke-opacity=".35"/>`
+         + `<circle id="xh_ec" r="5" fill="#2C4A63" stroke="var(--card)" stroke-width="2"/><circle id="xh_inv" r="5" fill="#B8703E" stroke="var(--card)" stroke-width="2"/></g>`
+         + `<rect id="hit" x="${m.l}" y="${m.t}" width="${W - m.l - m.r}" height="${H - m.t - m.b}" fill="transparent"/>`;
+      // crossover: first place EC overtakes inventory, linearly interpolated between grid points
+      for (let i = 1; i < rows.length; i++) {
+        const d0 = rows[i - 1].net_EC - rows[i - 1].net_inventory, d1 = rows[i].net_EC - rows[i].net_inventory;
+        if (d0 < 0 && d1 >= 0) {
+          const cx = rows[i - 1].C_change + (-d0 / (d1 - d0)) * (rows[i].C_change - rows[i - 1].C_change);
+          const label = `EC breakeven: ${cx.toFixed(1)} t CO2e/ha/yr`;
+          const right = x(cx) + 8 + label.length * 8.6 > W - m.r;    // flip to the left of the line if it would run off the plot
+          g += `<line x1="${x(cx)}" x2="${x(cx)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--ink2)" stroke-dasharray="5 4"/>`;
+          g += `<text x="${x(cx) + (right ? -8 : 8)}" y="${m.t + 18}" text-anchor="${right ? "end" : "start"}"
+                  font-size="15" font-weight="600" fill="var(--ink)" stroke="var(--card)" stroke-width="4" paint-order="stroke">${label}</text>`;
+          break;
+        }
+      }
+      g += youLabel;
+      g += `<g class="axis">`;
+      for (let c = 0; c <= 15; c += 5)
+        g += `<text x="${x(c)}" y="${H - m.b + 22}" text-anchor="middle">${c}</text>`;
+      g += `<text x="${(m.l + W - m.r) / 2}" y="${H - 10}" text-anchor="middle">10-year C stock change (t CO2e/ha/yr)</text></g>`;
+      g += legendSvg([["EC net profit", "#2C4A63"], ["Inventory net profit", "#B8703E"]]);
+      $("chart").innerHTML = defs + g;
+      // hover: crosshair + tooltip snapped to the nearest grid point
+      const svg = $("chart"), tip = $("chart_tip"), hit = $("hit"), xh = $("xhair");
+      const leave = () => { xh.style.display = "none"; tip.style.opacity = 0; };
+      hit.addEventListener("mouseleave", leave);
+      hit.addEventListener("mousemove", e => {
+        const bb = svg.getBoundingClientRect(), k = bb.width / W;
+        const c = (e.clientX - bb.left) / k;
+        const r = rows.reduce((a, q) => Math.abs(x(q.C_change) - c) < Math.abs(x(a.C_change) - c) ? q : a);
+        xh.style.display = "";
+        $("xh_line").setAttribute("x1", x(r.C_change)); $("xh_line").setAttribute("x2", x(r.C_change));
+        $("xh_ec").setAttribute("cx", x(r.C_change)); $("xh_ec").setAttribute("cy", y(r.net_EC));
+        $("xh_inv").setAttribute("cx", x(r.C_change)); $("xh_inv").setAttribute("cy", y(r.net_inventory));
+        const d = r.net_EC - r.net_inventory;
+        tip.innerHTML = `<div class="t">${+r.C_change.toFixed(1)} t CO2e/ha/yr</div>`
+          + `<div class="r"><span><i style="background:#2C4A63"></i>EC</span><b>${fmM(r.net_EC)}</b></div>`
+          + `<div class="r"><span><i style="background:#B8703E"></i>Inventory</span><b>${fmM(r.net_inventory)}</b></div>`
+          + `<div class="r" style="border-top:1px solid #3a4150;margin-top:.2rem;padding-top:.2rem"><span>EC advantage</span><b>${signed(d)}</b></div>`;
+        const px = x(r.C_change) * k, flip = px > bb.width * 0.6;
+        tip.style.left = (flip ? px - tip.offsetWidth - 14 : px + 14) + "px";
+        tip.style.top = Math.max(0, y(Math.max(r.net_EC, r.net_inventory)) * k - 10) + "px";
+        tip.style.opacity = 1;
+      });
+    }
+
+    // Editable list of the parameters, built from P so it never drifts from the model.
+    // Double-click a value to edit it; edited values change colour. Typing the default restores it.
+    const usd = v => "$" + v.toLocaleString();
+    const KINDS = {
+      int: {fmt: v => v,   toRaw: v => v, fromRaw: x => Math.max(0, Math.round(x))},
+      usd: {fmt: usd,      toRaw: v => v, fromRaw: x => Math.max(0, x)},
+      num: {fmt: v => v,   toRaw: v => v, fromRaw: x => Math.max(0, x)},
+      flag: {fmt: v => v ? "Yes" : "No"},
+      pct: {fmt: v => +(v * 100).toFixed(1) + "%", toRaw: v => +(v * 100).toFixed(1), fromRaw: x => Math.min(100, Math.max(0, x)) / 100},
+    };
+    // Each row: [label, P key, kind, reference]
+    function renderParams() {
+    const open = [...document.querySelectorAll("#params details")].map(d => d.open);
+    const PARAM_GROUPS = {
+      "Soil & Biomass Inventory": [
+        ["Biomass plots", "plots", "int", "Minimum plots, Verra <a href='https://verra.org/methodologies/vm0047-afforestation-reforestation-and-revegetation-v1-1/#'>VM0047</a>"],
+        ["Soil cores per plot", "cores", "int", "Verra <a href='https://verra.org/methodologies/vmd0004-estimation-of-stocks-in-the-soil-organic-carbon-pool-cp-s-v1-0/'>VMD0004</a>"],
+        ["Cost per core (field personnel + lab)", "cost_core", "usd", ""],
+        ["Cost per biomass plot (field personnel)", "cost_biomass", "usd", ""],
+        ["Number of surveys (default: years 1, 5, 10)", "surveys", "int", ""],
+        ["Soil + root C measurement uncertainty", "u_soil", "pct", "Likely >20%; <a href='https://soil.copernicus.org/articles/11/17/2025/'>Even et al. 2025</a>"],
+        ["Biomass plot measurement uncertainty", "u_biomass", "pct", ""],
+        ["Fraction of belowground C sampled by cores (roots + soil)", "frac_shallow", "pct", ""],
+        ["Litter C measurement uncertainty (if counted)", "u_litter", "pct", ""],
+      ],
+      "Eddy covariance": [
+        ["Control towers (additional to establish baseline)", "baselines", "int", "SocialCarbon <a href='https://static1.squarespace.com/static/6161c89d030b89374bec0b70/t/69ef372bd2401d40d5f46612/1777284907913/SOCIALCARBON-SCD0003_v1.0.pdf'>SCD0003</a>"],
+        ["Capex per tower", "capex", "usd", ""],
+        ["Opex per tower per year", "opex", "usd", ""],
+        ["EC measurement uncertainty = a + b × t CO2e/ha<br>(joint random & U* filtering uncertainty)", ["u_ec_a", "u_ec_b"], "pair", "FLUXNET, <a href='https://fluxnet-1flux.org/'>ONEFLUX</a>"],
+      ],
+      [`Carbon stock changes (10 years): ${$("eco").value}`]: [
+        ["Aboveground biomass", "frac_above", "pct", ecoRef()],
+        ["Belowground biomass (roots)", "frac_roots", "pct", ecoRef()],
+        ["Soil carbon", "frac_soilc", "pct", ""],
+        ["Litter", "frac_litter", "pct", ""],
+        ["Leakage", "frac_leakage", "pct", ""],
+      ],
+    };
+    const poolTotal = P.frac_above + P.frac_roots + P.frac_soilc + P.frac_litter + P.frac_leakage;
+    const cell = (key, kind) => `<td class="val${isEdited(key) ? " edited" : ""}" data-key="${key}" data-kind="${kind}" title="Double-click to edit">${KINDS[kind].fmt(P[key])}</td>`;
+    // Two editable numbers on one row (a and b of the EC uncertainty line); each span is edited like a cell.
+    const pairCell = ([ka, kb]) => {
+      const sp = (k, n) => `${n} = <span class="val${isEdited(k) ? " edited" : ""}" data-key="${k}" data-kind="num" title="Double-click to edit">${KINDS.num.fmt(P[k])}</span>`;
+      return `<td class="pair">${sp(ka, "a")} &nbsp;·&nbsp; ${sp(kb, "b")}</td>`;
+    };
+    // rows that only apply when the matching switch (top of page) is on
+    const HIDDEN = new Set([...(P.soil_cores ? [] : ["cores", "cost_core", "u_soil", "frac_shallow"]), ...(P.litter_in_inv ? [] : ["u_litter"])]);
+    $("params").innerHTML = Object.entries(PARAM_GROUPS).map(([title, allRows]) => {
+        const rows = allRows.filter(r => !HIDDEN.has(r[1]));
+        const total = title.startsWith("Carbon stock changes")
+          ? `<tr><td>Total</td><td class="total${Math.abs(poolTotal - 1) > 5e-4 ? " bad" : ""}">${+(poolTotal * 100).toFixed(1)}%</td><td class="ref">${Math.abs(poolTotal - 1) > 5e-4 ? "should sum to 100%" : ""}</td></tr>` : "";
+        return `<details><summary>${title}</summary><table><tr><th>Parameter</th><th>Value</th><th>Reference</th></tr>${rows.map(([label, key, kind, ref]) => `<tr><td>${label}</td>${kind === "pair" ? pairCell(key) : cell(key, kind)}<td class="ref">${ref}</td></tr>`).join("")}${total}</table></details>`;
+      }).join("");
+    document.querySelectorAll("#params details").forEach((d, n) => { d.open = !!open[n]; });
+    }
+
+    $("params").addEventListener("dblclick", e => {
+      const td = e.target.closest(".val[data-key]");
+      if (!td || td.querySelector("input")) return;
+      const key = td.dataset.key, K = KINDS[td.dataset.kind];
+      if (td.dataset.kind === "flag") { setOverride(key, P[key] ? 0 : 1); update(); return; }   // yes/no cells toggle instead of opening a text box
+      const input = document.createElement("input");
+      input.type = "text"; input.inputMode = "decimal"; input.className = "cell-edit"; input.value = K.toRaw(P[key]);
+      td.textContent = ""; td.appendChild(input); input.focus(); input.select();
+      let done = false;
+      const finish = commit => {
+        if (done) return; done = true;
+        const x = parseFloat(input.value.replace(/[$,%\s]/g, ""));
+        if (commit && isFinite(x)) setOverride(key, K.fromRaw(x));
+        update();
+      };
+      input.addEventListener("keydown", ev => { if (ev.key === "Enter") finish(true); else if (ev.key === "Escape") finish(false); });
+      input.addEventListener("blur", () => finish(true));
+    });
+    // ================= TEST CHARTS (experimental; safe to delete) =================
+    // 1. Heatmap: relative EC advantage over project size x annual C rate (blue: EC earns more, orange: inventory).
+    function drawMap(size_ha, price, C_sel) {
+      const W = 540, H = FRAME.H, m = {...FRAME.m, l: 64, r: 12};
+      const plotW = W - m.l - m.r, plotH = H - m.t - m.b;
+      const xr = c => m.l + (c / 15) * plotW;
+      const LO = Math.log10(SIZES[0]), HI = Math.log10(SIZES[SIZES.length - 1]);   // project size on a log axis
+      const yr = A => m.t + (HI - Math.log10(A)) / (HI - LO) * plotH;
+      const mix = (c0, c1, t) => c0.map((v, i) => Math.round(v + (c1[i] - v) * t));
+      const dark = false;
+      const WHITE = dark ? [23, 28, 37] : [255, 255, 255], BLUE = [44, 74, 99], ORANGE = [184, 112, 62];
+      // Fine grid drawn into a small canvas, then stretched (smoothly interpolated) to fill the plot, so there are no visible blocks.
+      const NX = 150, NY = 100, cv = document.createElement("canvas");
+      cv.width = NX; cv.height = NY;
+      const ctx = cv.getContext("2d"), img = ctx.createImageData(NX, NY);
+      for (let iy = 0; iy < NY; iy++) {
+        const A = Math.pow(10, HI - (iy + 0.5) / NY * (HI - LO));
+        for (let ix = 0; ix < NX; ix++) {
+          const rate = (ix + 0.5) / NX * 15;
+          const r = runModel(rate * YEARS, A, price);
+          const rel = Math.max(-1, Math.min(1, (r.net_EC - r.net_inventory) / Math.max(Math.abs(r.net_EC), Math.abs(r.net_inventory), 1)));
+          const col = mix(WHITE, rel >= 0 ? BLUE : ORANGE, Math.pow(Math.abs(rel), 0.6));
+          const o = (iy * NX + ix) * 4;
+          img.data[o] = col[0]; img.data[o + 1] = col[1]; img.data[o + 2] = col[2]; img.data[o + 3] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      let g = `<image x="${m.l}" y="${m.t}" width="${plotW}" height="${plotH}" preserveAspectRatio="none" href="${cv.toDataURL()}"/>`;
+      g += `<circle class="hov" id="hm_dot" style="display:none" r="5" fill="var(--card)" stroke="var(--ink)" stroke-width="2"/>`;
+      HOV.map = {m, plotW, plotH, LO, HI, xr, yr, price};
+      g += `<circle cx="${xr(C_sel)}" cy="${yr(size_ha)}" r="7" fill="none" stroke="var(--card)" stroke-width="6.5"/><circle cx="${xr(C_sel)}" cy="${yr(size_ha)}" r="7" fill="none" stroke="var(--you)" stroke-width="3"/>`;
+      g += `<g class="axis">`;
+      for (let c = 0; c <= 15; c += 5) g += `<text x="${xr(c)}" y="${H - m.b + 22}" text-anchor="middle">${c}</text>`;
+      [500, 2000, 10000, 50000, 200000].forEach(A => {
+        g += `<text x="${m.l - 8}" y="${yr(A) + 5}" text-anchor="end">${A >= 1000 ? A / 1000 + "k" : A}</text>`;
+      });
+      g += `<text x="${m.l + plotW / 2}" y="${H - 10}" text-anchor="middle">C stock change (t CO2e/ha/yr)</text>`;
+      g += `<text transform="translate(14 ${m.t + (H - m.t - m.b) / 2}) rotate(-90)" text-anchor="middle">Project size (ha)</text></g>`;
+      g += legendSvg([["EC advantage", "#2C4A63"], ["Inventory advantage", "#B8703E"], ["Your project", "var(--you)", "ring"]]);
+      $("t_map").innerHTML = g;
+    }
+
+    // 2. Tornado: how the EC advantage (net EC - net inventory) moves when each assumption is changed.
+    function drawTornado(C_sel, size_ha, price) {
+      const W = 640, H = FRAME.H, m = {...FRAME.m, l: 156, r: 12, t: 54, b: 62};   // top margin: legend row, then "current settings"
+      const C = C_sel * YEARS;
+      const res = mods => {
+        const save = {...P}; Object.assign(P, mods);
+        const r = runModel(C, size_ha, price); Object.assign(P, save);
+        return r;
+      };
+      const adv = mods => { const r = res(mods); return r.net_EC - r.net_inventory; };
+      // Each row varies one parameter low/high; the bar ends are labelled with the parameter value used there.
+      const pct = v => +(v * 100).toFixed(1) + "%", dollars = v => "$" + Math.round(v).toLocaleString();
+      const k = (key, f, fmt) => ({mods: {[key]: P[key] * f}, txt: fmt(P[key] * f)});
+      const clampShare = d => Math.min(1, Math.max(0, d));   // sampled share of belowground C, +/-10 percentage points
+      const items = [
+        ["Soil core uncertainty", k("u_soil", 0.5, pct), k("u_soil", 1.5, pct)],
+        ["Biomass uncertainty", k("u_biomass", 0.5, pct), k("u_biomass", 1.5, pct)],
+        ["Tower capex", k("capex", 0.5, dollars), k("capex", 1.5, dollars)],
+        ["Tower opex (per yr)", k("opex", 0.5, dollars), k("opex", 1.5, dollars)],
+        ["EC towers", {mods: {towers: 1}, txt: "1"}, {mods: {towers: 5}, txt: "5"}],
+        ["EC uncertainty", k("u_ec_a", 0.5, v => +v.toFixed(2)), k("u_ec_a", 1.5, v => +v.toFixed(2))],
+        ["Leakage", k("frac_leakage", 0.5, pct), k("frac_leakage", 1.5, pct)],
+        ["Belowground C sampled", {mods: {frac_shallow: clampShare(P.frac_shallow - 0.1)}, txt: pct(clampShare(P.frac_shallow - 0.1))},
+                                  {mods: {frac_shallow: clampShare(P.frac_shallow + 0.1)}, txt: pct(clampShare(P.frac_shallow + 0.1))}],
+      ].filter(([label]) => P.soil_cores || !(["Soil core uncertainty", "Belowground C sampled"].includes(label)))
+       .map(([label, lo, hi]) => {
+          const key = Object.keys(lo.mods)[0], side = (o) => { const r = res(o.mods); return {a: r.net_EC - r.net_inventory, net: r.net_EC, inv: r.net_inventory, txt: o.txt, dir: Math.sign(o.mods[key] - P[key])}; };
+          const L = side(lo), H = side(hi);
+          return {label, aL: L.a, aH: H.a, tL: lo.txt, tH: hi.txt, L, H};
+        })
+       .sort((a, b) => Math.abs(b.aH - b.aL) - Math.abs(a.aH - a.aL));
+      const base = adv({});
+      const all = items.flatMap(d => [d.aL, d.aH]).concat([base]);
+      const lo = Math.min(...all), hi = Math.max(...all);
+      const raw = ((hi - lo) || 1) / 4, pw = Math.pow(10, Math.floor(Math.log10(raw)));
+      const step = [1, 2, 5, 10].map(q => q * pw).find(v => v >= raw);
+      // domain fitted to the data (zero is not drawn), with room either side for the value labels
+      const t0 = Math.ceil(lo / step - 1e-9) * step, t1 = Math.floor(hi / step + 1e-9) * step, pad = 0.2 * ((hi - lo) || 1);
+      const d0 = lo - pad, d1 = hi + pad, plotW = W - m.l - m.r;
+      const x = v => m.l + ((v - d0) / (d1 - d0)) * plotW;
+      const rh = (H - m.t - m.b) / items.length, bh = rh * 0.55;
+      const LOSS = "#B8703E", GAIN = "#2C4A63";
+      let g = "";
+      for (let v = t0; v <= t1 + step / 2; v += step) {
+        if (Math.abs(v) < step / 1e6) continue;   // no $0 line or label on this chart
+        g += `<line x1="${x(v)}" x2="${x(v)}" y1="${m.t}" y2="${H - m.b}" stroke="var(--grid)"/>`
+           + `<g class="axis"><text x="${x(v)}" y="${H - m.b + 22}" text-anchor="middle">${fmtM(v, step)}</text></g>`;   // same axis style as the other charts
+      }
+      g += `<line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" stroke="var(--axis0)"/>`;   // x-axis baseline, same colour as the $0 line on the other charts
+      items.forEach((d, i) => {
+        const y = m.t + i * rh + (rh - bh) / 2;
+        const seg = (a, col) => `<rect x="${Math.min(x(base), x(a))}" y="${y}" width="${Math.abs(x(a) - x(base))}" height="${bh}" fill="${col}"/>`;
+        g += seg(d.aL, d.aL < base ? LOSS : GAIN) + seg(d.aH, d.aH < base ? LOSS : GAIN);   // colour = effect on EC advantage, not parameter direction
+        [[d.aL, d.tL, false], [d.aH, d.tH, true]].forEach(([a, txt, isHigh]) => {
+          const right = a === base ? isHigh : a > base;      // a bar of zero length: low value goes left, high goes right
+          g += `<text class="vlab" x="${x(a) + (right ? 4 : -4)}" y="${y + bh - 2}" text-anchor="${right ? "start" : "end"}">${txt}</text>`;
+        });
+        g += `<text class="lab" x="${m.l - 8}" y="${y + bh - 1}" text-anchor="end">${d.label}</text>`;
+      });
+      g += `<rect class="hov" id="tn_hl" style="display:none" x="${m.l}" width="${plotW}" height="${rh}" fill="var(--ink)" fill-opacity=".05"/>`;
+      HOV.tornado = {m, rh, x, base, items};
+      g += `<line x1="${x(base)}" x2="${x(base)}" y1="${m.t - 4}" y2="${H - m.b}" stroke="var(--ink)" stroke-width="1.5"/>`;
+      g += `<text class="lab" x="${x(base)}" y="${m.t - 8}" text-anchor="middle">current settings</text>`;
+      g += `<g class="axis"><text x="${m.l + plotW / 2}" y="${H - 10}" text-anchor="middle">EC advantage over inventory (net $)</text></g>`;
+      g += legendSvg([["Favors inventory more", LOSS], ["Favors EC more", GAIN]]);
+      $("t_tornado").innerHTML = g;
+    }
+    // ================= end test charts =================
+
+    $("eco").innerHTML = Object.keys(ECOSYSTEMS).map(k => `<option>${k}</option>`).join("");
+    $("eco").value = "Reforestation";
+    $("eco").addEventListener("change", update);
+    $("c").addEventListener("input", update);
+    $("het").addEventListener("input", update);
+    $("soil").addEventListener("change", update);
+    $("litter").addEventListener("change", update);
+    $("size").addEventListener("input", update);
+    $("price").addEventListener("input", update);
+    bindHover("bars", 540, (x, y) => {
+      const b = HOV.bars.find(o => x >= o.x0 && x <= o.x1 && y >= FRAME.m.t - 10 && y <= FRAME.H - FRAME.m.b);
+      return b ? b.html : null;
+    });
+    bindHover("t_tornado", 640, (x, y) => {
+      const T = HOV.tornado; if (!T) return null;
+      const i = Math.floor((y - T.m.t) / T.rh);
+      if (i < 0 || i >= T.items.length || x < T.m.l - 150) { return null; }
+      const d = T.items[i], hl = $("tn_hl");
+      hl.setAttribute("y", T.m.t + i * T.rh); hl.style.display = "";
+      const s = Math.abs(T.x(d.aL) - x) <= Math.abs(T.x(d.aH) - x) ? d.L : d.H;
+      const adv = s.a, dv = adv - T.base, word = s.dir > 0 ? "increased" : s.dir < 0 ? "decreased" : "held";
+      return `<div class="t">If ${d.label} is ${word}${s.dir ? " to" : " at"} <b style="color:#fff">${s.txt}</b></div>`
+        + `<div class="r"><span><i style="background:#2C4A63"></i>EC net profit</span><b>${fmM(s.net)}</b></div>`
+        + `<div class="r"><span><i style="background:#B8703E"></i>Inventory</span><b>${fmM(s.inv)}</b></div>`
+        + `<div class="sep dim">${Math.abs(dv) < 1 ? "No change from your current settings" : `${signed(dv)} for EC advantage compared with your current settings`}</div>`;
+    });
+    bindHover("t_map", 540, (x, y) => {
+      const M = HOV.map; if (!M) return null;
+      const {m, plotW, plotH, LO, HI} = M;
+      if (x < m.l || x > m.l + plotW || y < m.t || y > m.t + plotH) return null;
+      const rate = (x - m.l) / plotW * 15, A = Math.pow(10, HI - (y - m.t) / plotH * (HI - LO));
+      const r = runModel(rate * YEARS, A, M.price), diff = r.net_EC - r.net_inventory;
+      const dot = $("hm_dot"); dot.setAttribute("cx", x); dot.setAttribute("cy", y); dot.style.display = "";
+      return `<div class="t">${rate.toFixed(1)} t CO2e/ha/yr · ${Math.round(A).toLocaleString()} ha</div>`
+        + `<div class="r"><span><i style="background:#2C4A63"></i>EC net</span><b>${fmM(r.net_EC)}</b></div>`
+        + `<div class="r"><span><i style="background:#B8703E"></i>Inventory net</span><b>${fmM(r.net_inventory)}</b></div>`
+        + `<div class="sep">${Math.abs(diff) < 1 ? "Break-even" : diff > 0 ? `EC earns <b>${fmM(diff)}</b> more` : `Inventory earns <b>${fmM(-diff)}</b> more`}</div>`;
+    });
+    matchMedia("(prefers-color-scheme: dark)").addEventListener("change", update);
+    update();
+  </script>
+
+</div>
+</body>
+</html>
