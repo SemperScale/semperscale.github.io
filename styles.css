@@ -653,3 +653,17 @@ footer p {
         grid-template-columns: 1fr;
     }
 }
+
+/* Inline text links */
+.inline-link {
+    color: var(--primary);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+}
+
+.inline-link:hover {
+    color: var(--secondary);
+    text-decoration-color: var(--secondary);
+}
