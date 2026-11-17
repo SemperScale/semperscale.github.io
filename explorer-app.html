@@ -167,6 +167,8 @@
     #params td.val.edited { color: var(--edit); font-weight: 700; background: color-mix(in srgb, var(--edit) 12%, transparent); }
     #params td.total { text-align: right; padding-right: 1.5rem; font-weight: 600; }
     #params td.total.bad { color: var(--bad); }
+    #params .reset-one { margin-right: 0.6em; font: inherit; font-size: 0.85em; line-height: 1; color: var(--edit); background: transparent; border: 1px solid var(--edit); border-radius: 5px; padding: 1px 5px; cursor: pointer; }
+    #params .reset-one:hover { background: color-mix(in srgb, var(--edit) 12%, transparent); }
     #params .cell-edit { width: 6.5em; font: inherit; text-align: right; padding: 2px 6px; border: 1px solid var(--edit); border-radius: 6px; outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--edit) 18%, transparent); }
     #params td.ref { color: var(--ink2); font-size: 0.85rem; }
     #params a, #model_details a { color: var(--ec); text-decoration: none; border-bottom: 1px solid rgba(44,74,99,.3); }
@@ -184,7 +186,7 @@
       font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--accent);
       background: color-mix(in srgb, var(--accent) 9%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); }
     .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
-    h1 { color: var(--primary, #2C4A63); }
+    h1 { color: #2C4A63; }
     .intro b { color: var(--ink); font-weight: 650; }
     .intro b.hl-inv, .intro b.hl-ec { font-weight: 700; }
     @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
@@ -211,6 +213,14 @@
     .tile .k i { width: 8px; height: 8px; border-radius: 50%; }
     .tile .v { margin-top: .25rem; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 1.25rem; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
     @media (max-width: 760px) { .headline { grid-template-columns: 1fr; } .hl-tiles { flex-wrap: wrap; } }
+    /* per-hectare breakdown inside each method tile */
+    .headline { border-bottom: 1px solid var(--line); }
+    .tile { min-width: 215px; border-top: 3px solid var(--mc); }
+    .tile .v small { font-family: inherit; font-size: .72rem; font-weight: 500; color: var(--ink3); margin-left: .35rem; }
+    .tile dl { display: grid; grid-template-columns: 1fr auto; gap: .2rem 1rem; margin: .55rem 0 0; padding-top: .5rem; border-top: 1px solid var(--soft); font-size: .8rem; }
+    .tile dt { color: var(--ink2); }
+    .tile .net { padding-top: .25rem; border-top: 1px solid var(--line); font-weight: 650; color: var(--ink); }
+    .tile dd { margin: 0; text-align: right; font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; color: var(--ink); white-space: nowrap; }
 
     /* chart hover */
     .chart-wrap { position: relative; }
@@ -310,8 +320,8 @@
   </div>
   <div class="ctl-grid">
   <div class="control">
-    <label>Landscape heterogeneity: <b id="het_val"></b> <span id="het_towers"></span></label>
-    <input id="het" type="range" min="1" max="5" step="1" value="3">  <!-- each step adds one project EC tower -->
+    <label>Landscape heterogeneity: <b id="het_val"></b>%<br><span id="het_towers"></span></label>
+    <input id="het" type="range" min="10" max="100" step="1" value="50">  <!-- plot-to-plot CV of biomass; sets plots, towers and sampling uncertainty -->
     <div class="ends"><span>Uniform</span><span>Patchy</span></div>
   </div>
   <div class="control">
@@ -380,6 +390,7 @@
         <li><i>f</i><sub>above</sub>, <i>f</i><sub>roots</sub>, <i>f</i><sub>soilC</sub>, <i>f</i><sub>litter</sub>, <i>f</i><sub>leak</sub>: fractions of <i>C</i> change in each pool by ecosystem</li>
         <li><i>d</i><sub>shallow</sub>: share of belowground carbon (roots + soil) that is shallow, i.e. sampled by soil cores; <i>f</i><sub>shallow</sub> = (<i>f</i><sub>roots</sub> + <i>f</i><sub>soilC</sub>)&middot;<i>d</i><sub>shallow</sub>; <i>f</i><sub>deep</sub>: the remaining (<i>f</i><sub>roots</sub> + <i>f</i><sub>soilC</sub>)(1 &minus; <i>d</i><sub>shallow</sub>) is deep and unsampled</li>
         <li><i>u</i><sub>bio</sub>, <i>u</i><sub>soil</sub>: uncertainty deductions of biomass plots and soil cores; <i>a</i>, <i>b</i>: EC uncertainty coefficients</li>
+        <li>CV: plot-to-plot coefficient of variation of biomass (heterogeneity slider); <i>k</i>: soil C change CV &divide; biomass CV; <i>r</i>: footprint factor; <i>z</i>: normal quantile for the confidence interval (1.645 at 90%)</li>
       </ul>
 
       <h4>Inventory (biomass plots and soil cores)</h4>
@@ -389,17 +400,26 @@
       <p>Only aboveground carbon and shallow belowground carbon (roots + soil sampled by cores) are measured. Deep belowground carbon and leakage earn no credits. Litter earns credits only if &ldquo;Count litter&rdquo; is switched on (in the controls above); no extra cost is added for it.</p>
 
       <h4>Eddy covariance</h4>
-      <div class="eq"><i>u</i><sub>EC</sub> = <i>a</i> + <i>b</i> &middot; <i>C</i>&nbsp;&nbsp;(t CO<sub>2</sub>e/ha deducted)</div>
+      <div class="eq"><i>u</i><sub>EC</sub> = &radic;[ (<i>a</i> + <i>b</i> &middot; <i>C</i>)&sup2; + (<i>u</i><sub>rep</sub> &middot; <i>C</i>)&sup2; ]&nbsp;&nbsp;(t CO<sub>2</sub>e/ha deducted)</div>
       <div class="eq">credits<sub>EC</sub> = max( <i>C</i> &middot; (1 &minus; <i>f</i><sub>leak</sub>) &minus; <i>u</i><sub>EC</sub>, 0 )&nbsp;&nbsp;(t CO<sub>2</sub>e/ha)</div>
       <div class="eq">cost<sub>EC</sub> = ( capex + opex &middot; <i>T</i> ) &middot; ( <i>n</i><sub>towers</sub> + <i>n</i><sub>baseline</sub> )</div>
       <p>The tower sees net exchange of all pools, so deep soil and litter are included. Only leakage and the uncertainty deduction are removed.</p>
-      <p><i>n</i><sub>towers</sub> equals the landscape heterogeneity slider (1&ndash;5): a patchier landscape needs one more project tower per level. <i>n</i><sub>baseline</sub> is fixed at 1.</p>
+      <p>The first term is FLUXNET measurement error; the second is how well the towers represent the whole project (below). <i>n</i><sub>baseline</sub> is fixed at 1.</p>
+
+      <h4>Landscape heterogeneity: sample sizes and sampling uncertainty</h4>
+      <p>Plot and tower counts meet &plusmn;10% at 90% confidence requirements.</p>
+      <div class="eq"><i>n</i><sub>plots</sub> = max( 30, (<i>z</i> &middot; CV / 0.10)&sup2; )&nbsp;&nbsp;&nbsp;&nbsp;<i>u</i><sub>bio</sub> = <i>z</i> &middot; CV / &radic;<i>n</i><sub>plots</sub>&nbsp;&nbsp;&nbsp;&nbsp;<i>u</i><sub>soil</sub> = <i>z</i> &middot; <i>k</i> &middot; CV / &radic;<i>n</i><sub>plots</sub></div>
+      <div class="eq"><i>n</i><sub>towers</sub> = max( 1, (<i>z</i> &middot; <i>r</i> &middot; CV / 0.10)&sup2; )&nbsp;&nbsp;&nbsp;&nbsp;<i>u</i><sub>rep</sub> = <i>z</i> &middot; <i>r</i> &middot; CV / &radic;<i>n</i><sub>towers</sub></div>
+      <p><i>r</i> &lt; 1 because each tower footprint averages over tens of hectares.</p>
 
       <h4>Assumptions</h4>
       <ul id="assumptions">
         <li>The project window is 10 years.</li>
         <li>EC tower uncertainty scales with net ecosystem exchange according to FLUXNET data (&rho; = 0.09).</li>
         <li>Spatial scaling via modeling or remote sensing is not incorporated.</li>
+        <li>One CV describes the whole project; strata (age classes, cover types) are not modeled separately. Real projects estimate CV from pilot plots or a remote-sensing proxy (e.g. lidar canopy height).</li>
+        <li>The footprint factor <i>r</i> = 0.2 is illustrative, inferred from paired-tower studies rather than reported by them.</li>
+        <li><i>z</i> uses the normal distribution. With few samples (e.g. 1&ndash;3 towers) a t-value would be larger; raise the confidence interval to be more conservative.</li>
         <li>Additional biomass surveys (e.g. lidar) not considered.</li>
         <li>Not based on any specific protocols, as they can change rapidly; this serves as a scoping study.</li>
       </ul>
@@ -412,10 +432,13 @@
     const P = {
       cost_biomass: 300, cost_core: 300,          // $ per plot / per core
       capex: 80000, opex: 30000,                  // $ per tower, $/yr
-      plots: 30, cores: 4, surveys: 3,
-      towers: 1, baselines: 1,
+      cores: 4, surveys: 3, baselines: 1,
       soil_cores: 1,                              // toggle in the controls: 0 = inventory samples biomass plots only, no soil cores
-      u_soil: 0.2, u_biomass: 0.1,
+      cv: 0.5,                                    // plot-to-plot CV of biomass (heterogeneity slider)
+      k_soil: 2,                                  // soil C change CV = k_soil x biomass CV (change is noisier than stocks)
+      r_ec: 0.2,                                  // footprint factor: tower-to-tower CV / plot-to-plot CV
+      ci: 0.90,                                   // confidence level of the uncertainty (Verra: 90%); z is calculated from it
+      // derive(): plots and towers default from the CVs (table edits override); u_biomass, u_soil, u_rep are always computed
       litter_in_inv: 0, u_litter: 0.2,            // optional: also count litter in the inventory (no added cost, for simplicity)
       u_ec_a: 2.1, u_ec_b: 0.013,                 // EC deduction = a + b * C_change
       frac_above: 0, frac_roots: 0, frac_soilc: 0, frac_shallow: 0, frac_litter: 0, frac_leakage: 0,   // set from ECOSYSTEMS below
@@ -460,7 +483,27 @@
     const P0 = {...P};                       // defaults for everything except the ecosystem pools
     const OVR = {}, OVR_ECO = {};
     const isPool = k => k.startsWith("frac_");
-    const defaultOf = k => isPool(k) ? ECOSYSTEMS[$("eco").value][k] : P0[k];
+    const defaultOf = k => k in D ? D[k] : isPool(k) ? ECOSYSTEMS[$("eco").value][k] : P0[k];
+
+    // Sample sizes and sampling uncertainty from the CVs (90% CI half-width, Verra-style).
+    // Each default is sized to hit +/-10%; any value edited in the table overrides its default.
+    const D = {}, TARGET = 0.10;
+    // z for a two-sided confidence level (normal quantile; Abramowitz & Stegun 26.2.23, error < 0.0005). 90% -> 1.645
+    function zOf(ci) {
+      const p = (1 - Math.min(0.999, Math.max(0.5, ci))) / 2, t = Math.sqrt(-2 * Math.log(p));
+      return t - (2.515517 + 0.802853 * t + 0.010328 * t * t) / (1 + 1.432788 * t + 0.189269 * t * t + 0.001308 * t ** 3);
+    }
+    function derive() {
+      const pick = k => k in OVR ? (["plots", "towers"].includes(k) ? Math.max(1, OVR[k]) : OVR[k]) : D[k];
+      const z = zOf(P.ci);
+      D.plots = Math.max(30, Math.ceil((z * P.cv / TARGET) ** 2));             P.plots = pick("plots");
+      D.towers = Math.max(1, Math.ceil((z * P.r_ec * P.cv / TARGET) ** 2));    P.towers = pick("towers");
+      P.u_biomass = z * P.cv / Math.sqrt(P.plots);
+      P.u_soil = z * P.k_soil * P.cv / Math.sqrt(P.plots);
+      P.u_rep = z * P.r_ec * P.cv / Math.sqrt(P.towers);
+    }
+    // EC deduction (t CO2e/ha): FLUXNET measurement error and tower representativeness, added in quadrature
+    const uEC = C => Math.hypot(P.u_ec_a + P.u_ec_b * C, P.u_rep * C);
     const isEdited = k => isPool(k) ? k in (OVR_ECO[$("eco").value] || {}) : k in OVR;
     function setOverride(k, v) {
       const store = isPool(k) ? (OVR_ECO[$("eco").value] ??= {}) : OVR;
@@ -473,15 +516,20 @@
     // ---- Model (port of credits / costs / totals) ----
     const SIZES = [500, 750, 1000, 1500, 2000, 3000, 5000, 7500, 10000, 15000, 20000, 30000, 50000, 75000, 100000, 150000, 200000];
 
+    // MRV cost over the project window, and the share of new carbon each method measures
+    const costInv = () => P.soil_cores * P.cost_core * P.plots * P.cores * P.surveys + P.cost_biomass * P.plots * P.surveys;
+    const costEC = () => (P.capex + P.opex * YEARS) * (P.baselines + P.towers);
+    const shareInv = () => P.frac_above + P.soil_cores * (P.frac_roots + P.frac_soilc) * P.frac_shallow + (P.litter_in_inv ? P.frac_litter : 0);
+    const shareEC = () => 1 - P.frac_leakage;
+
     function runModel(C_change, size_ha, price) {
       const C_inventory = C_change * P.frac_above * (1 - P.u_biomass)
                         + P.soil_cores * C_change * (P.frac_roots + P.frac_soilc) * P.frac_shallow * (1 - P.u_soil)
                         + (P.litter_in_inv ? C_change * P.frac_litter * (1 - P.u_litter) : 0);
-      const u_ec_abs = P.u_ec_a + P.u_ec_b * C_change;
+      const u_ec_abs = uEC(C_change);
       const C_EC = Math.max(C_change * (1 - P.frac_leakage) - u_ec_abs, 0);
 
-      const cost_inventory = P.soil_cores * P.cost_core * P.plots * P.cores * P.surveys + P.cost_biomass * P.plots * P.surveys;
-      const cost_EC = (P.capex + P.opex * 10) * (P.baselines + P.towers);
+      const cost_inventory = costInv(), cost_EC = costEC();
 
       const net_EC = C_EC * size_ha * price - cost_EC;
       const net_inventory = C_inventory * size_ha * price - cost_inventory;
@@ -513,8 +561,17 @@
         `<div><div class="hl-label">EC advantage over inventory · ${YEARS}-year net profit</div>`
         + `<div class="hl-num" id="hl_num">${tie ? "$0" : (ahead ? "+" : "−") + money(Math.abs(diff))}</div>`
         + `</div>`
-        + `<div class="hl-tiles"><div class="tile"><div class="k"><i style="background:#2C4A63"></i>Eddy covariance</div><div class="v">${money(r.net_EC)}</div></div>`
-        + `<div class="tile"><div class="k"><i style="background:#B8703E"></i>Inventory</div><div class="v">${money(r.net_inventory)}</div></div></div>`;
+        + `<div class="hl-tiles">${tile("Eddy covariance", "var(--ec)", r.net_EC, costEC(), shareEC())}${tile("Inventory", "var(--inv)", r.net_inventory, costInv(), shareInv())}</div>`;
+
+      // One card per method: total net profit, then per-ha net profit, MRV cost and new carbon measured over the window.
+      function tile(name, col, net, cost, share) {
+        return `<div class="tile" style="--mc:${col}"><div class="k"><i style="background:${col}"></i>${name}</div>`
+          + `<div class="v">${money(net)}<small>total</small></div>`
+          + `<dl><dt>Carbon measured</dt><dd>${(share * C_sel * YEARS).toFixed(1)} t CO₂e/ha</dd>`
+          + `<dt>Credit revenue</dt><dd>${dollars0((net + cost) / size_ha)}/ha</dd>`
+          + `<dt>− MRV cost</dt><dd>${dollars0(cost / size_ha)}/ha</dd>`
+          + `<dt class="net">= Net profit</dt><dd class="net">${dollars0(net / size_ha)}/ha</dd></dl></div>`;
+      }
     }
 
     // Mini stacked bar: how the selected ecosystem splits new carbon across pools (follows edits in the table).
@@ -539,9 +596,10 @@
       P.soil_cores = $("soil").checked ? 1 : 0;
       $("soil_state").textContent = P.soil_cores ? "On" : "Off";
       $("soil_hint").textContent = P.soil_cores ? "Inventory samples soil cores as well as biomass plots." : "Inventory measures aboveground biomass only: no soil or root credits, no coring cost.";
-      P.towers = +$("het").value;                 // patchier landscape: one more project tower per level
-      $("het_val").textContent = P.towers;
-      $("het_towers").textContent = `(${P.towers} EC tower${P.towers > 1 ? "s" : ""})`;
+      P.cv = +$("het").value / 100;               // patchier landscape: more plots and towers (derive)
+      derive();
+      $("het_val").textContent = $("het").value;
+      $("het_towers").textContent = `${P.plots} plots, ${P.towers} EC tower${P.towers > 1 ? "s" : ""}`;
       renderParams();
       drawPoolBar();
       const size_ha = SIZES[+$("size").value];
@@ -554,7 +612,8 @@
       const C_sel = +$("c").value;
       $("c_val").textContent = C_sel;
       $("bars_title_c").textContent = C_sel;
-      drawHeadline(runModel(C_sel * YEARS, size_ha, price), C_sel, size_ha, price);
+      const sel = runModel(C_sel * YEARS, size_ha, price);
+      drawHeadline(sel, C_sel, size_ha, price);
       drawChart(rows, C_sel);
       drawBars(C_sel * YEARS, size_ha, price);   // bars use the window total
       drawMap(size_ha, price, C_sel); drawTornado(C_sel, size_ha, price);   // test charts
@@ -611,10 +670,9 @@
       const lit = P.litter_in_inv ? 1 : 0;
       const ded_inv = C * (P.frac_above * P.u_biomass + P.soil_cores * (P.frac_roots + P.frac_soilc) * P.frac_shallow * P.u_soil + lit * P.frac_litter * P.u_litter);
       const seen_inv = C * P.frac_above * (1 - P.u_biomass) + P.soil_cores * C * (P.frac_roots + P.frac_soilc) * P.frac_shallow * (1 - P.u_soil) + lit * C * P.frac_litter * (1 - P.u_litter);
-      const u_ec = Math.min(P.u_ec_a + P.u_ec_b * C, C * (1 - P.frac_leakage));
-      const seen_ec = Math.max(C * (1 - P.frac_leakage) - (P.u_ec_a + P.u_ec_b * C), 0);
-      const cost_inv = P.soil_cores * P.cost_core * P.plots * P.cores * P.surveys + P.cost_biomass * P.plots * P.surveys;
-      const cost_ec = (P.capex + P.opex * 10) * (P.baselines + P.towers);
+      const u_ec = Math.min(uEC(C), C * (1 - P.frac_leakage));
+      const seen_ec = Math.max(C * (1 - P.frac_leakage) - uEC(C), 0);
+      const cost_inv = costInv(), cost_ec = costEC();
       const M = [
         {name: "Inventory", seen: seen_inv * usdPer, ded: ded_inv * usdPer, cost: cost_inv},
         {name: "Eddy covariance", seen: seen_ec * usdPer, ded: u_ec * usdPer, cost: cost_ec},
@@ -791,18 +849,20 @@
     const open = [...document.querySelectorAll("#params details")].map(d => d.open);
     const PARAM_GROUPS = {
       "Soil & Biomass Inventory": [
-        ["Biomass plots", "plots", "int", "Minimum plots, Verra <a href='https://verra.org/methodologies/vm0047-afforestation-reforestation-and-revegetation-v1-1/#'>VM0047</a>"],
+        ["Biomass plots", "plots", "int", "Sized for &plusmn;10% at 90% CI, min 30; Verra <a href='https://verra.org/methodologies/vm0047-afforestation-reforestation-and-revegetation-v1-1/#'>VM0047</a>"],
         ["Soil cores per plot", "cores", "int", "Verra <a href='https://verra.org/methodologies/vmd0004-estimation-of-stocks-in-the-soil-organic-carbon-pool-cp-s-v1-0/'>VMD0004</a>"],
         ["Cost per core (field personnel + lab)", "cost_core", "usd", ""],
         ["Cost per biomass plot (field personnel)", "cost_biomass", "usd", ""],
         ["Number of surveys (default: years 1, 5, 10)", "surveys", "int", ""],
-        ["Soil + root C measurement uncertainty", "u_soil", "pct", "Likely >20%; <a href='https://soil.copernicus.org/articles/11/17/2025/'>Even et al. 2025</a>"],
-        ["Biomass plot measurement uncertainty", "u_biomass", "pct", ""],
+        ["Confidence interval", "ci", "pct", "Verra requires 90%. Increase for more conservative estimates. Applies to plots and towers."],
+        ["Soil C variability relative to biomass (k)", "k_soil", "num", "How many times more soil C change varies between plots than biomass does (soil CV = k &times; slider CV)."],
         ["Fraction of belowground C sampled by cores (roots + soil)", "frac_shallow", "pct", ""],
         ["Litter C measurement uncertainty (if counted)", "u_litter", "pct", ""],
       ],
       "Eddy covariance": [
         ["Control towers (additional to establish baseline)", "baselines", "int", "SocialCarbon <a href='https://static1.squarespace.com/static/6161c89d030b89374bec0b70/t/69ef372bd2401d40d5f46612/1777284907913/SOCIALCARBON-SCD0003_v1.0.pdf'>SCD0003</a>"],
+        ["Project towers", "towers", "int", "Sized for &plusmn;10% at 90% CI, min 1"],
+        ["Tower variability relative to plots (r)", "r_ec", "num", "Factor controlling towers differences from each other compared with plots, &lt;1 as each tower footprint averages over tens of hectares; 0.2 means towers vary 5&times; less than plots (<a href='https://woodwellclimate.org/wp-content/uploads/2015/09/HollingeretalGCB.04.pdf'>Hollinger et al. 2004</a>; <a href='https://scholars.duke.edu/individual/pub736367'>Oren et al. 2006</a>; <a href='https://bg.copernicus.org/articles/22/4507/2025/'>Callejas-Rodelas et al. 2025</a>)."],
         ["Capex per tower", "capex", "usd", ""],
         ["Opex per tower per year", "opex", "usd", ""],
         ["EC measurement uncertainty = a + b × t CO2e/ha<br>(joint random & U* filtering uncertainty)", ["u_ec_a", "u_ec_b"], "pair", "FLUXNET, <a href='https://fluxnet-1flux.org/'>ONEFLUX</a>"],
@@ -816,14 +876,16 @@
       ],
     };
     const poolTotal = P.frac_above + P.frac_roots + P.frac_soilc + P.frac_litter + P.frac_leakage;
-    const cell = (key, kind) => `<td class="val${isEdited(key) ? " edited" : ""}" data-key="${key}" data-kind="${kind}" title="Double-click to edit">${KINDS[kind].fmt(P[key])}</td>`;
+    // edited values get a small reset button just left of them (numbers stay right-aligned)
+    const resetBtn = key => isEdited(key) ? `<button type="button" class="reset-one" data-reset="${key}" title="Reset to default">&#8634;</button>` : "";
+    const cell = (key, kind) => `<td class="val${isEdited(key) ? " edited" : ""}" data-key="${key}" data-kind="${kind}" title="Double-click to edit">${resetBtn(key)}${KINDS[kind].fmt(P[key])}</td>`;
     // Two editable numbers on one row (a and b of the EC uncertainty line); each span is edited like a cell.
     const pairCell = ([ka, kb]) => {
-      const sp = (k, n) => `${n} = <span class="val${isEdited(k) ? " edited" : ""}" data-key="${k}" data-kind="num" title="Double-click to edit">${KINDS.num.fmt(P[k])}</span>`;
+      const sp = (k, n) => `${n} = ${resetBtn(k)}<span class="val${isEdited(k) ? " edited" : ""}" data-key="${k}" data-kind="num" title="Double-click to edit">${KINDS.num.fmt(P[k])}</span>`;
       return `<td class="pair">${sp(ka, "a")} &nbsp;·&nbsp; ${sp(kb, "b")}</td>`;
     };
     // rows that only apply when the matching switch (top of page) is on
-    const HIDDEN = new Set([...(P.soil_cores ? [] : ["cores", "cost_core", "u_soil", "frac_shallow"]), ...(P.litter_in_inv ? [] : ["u_litter"])]);
+    const HIDDEN = new Set([...(P.soil_cores ? [] : ["cores", "cost_core", "u_soil", "k_soil", "frac_shallow"]), ...(P.litter_in_inv ? [] : ["u_litter"])]);
     $("params").innerHTML = Object.entries(PARAM_GROUPS).map(([title, allRows]) => {
         const rows = allRows.filter(r => !HIDDEN.has(r[1]));
         const total = title.startsWith("Carbon stock changes")
@@ -833,7 +895,16 @@
     document.querySelectorAll("#params details").forEach((d, n) => { d.open = !!open[n]; });
     }
 
+    // Reset one edited value to its default (derived values follow the sliders again).
+    $("params").addEventListener("click", e => {
+      const b = e.target.closest("[data-reset]");
+      if (!b) return;
+      const k = b.dataset.reset;
+      delete (isPool(k) ? OVR_ECO[$("eco").value] || {} : OVR)[k];
+      update();
+    });
     $("params").addEventListener("dblclick", e => {
+      if (e.target.closest("[data-reset]")) return;
       const td = e.target.closest(".val[data-key]");
       if (!td || td.querySelector("input")) return;
       const key = td.dataset.key, K = KINDS[td.dataset.kind];
@@ -899,6 +970,7 @@
       const C = C_sel * YEARS;
       const res = mods => {
         const save = {...P}; Object.assign(P, mods);
+        if (["cv", "r_ec", "k_soil", "ci"].some(q => q in mods)) derive();    // plots, towers and uncertainties follow these inputs
         const r = runModel(C, size_ha, price); Object.assign(P, save);
         return r;
       };
@@ -908,16 +980,17 @@
       const k = (key, f, fmt) => ({mods: {[key]: P[key] * f}, txt: fmt(P[key] * f)});
       const clampShare = d => Math.min(1, Math.max(0, d));   // sampled share of belowground C, +/-10 percentage points
       const items = [
-        ["Soil core uncertainty", k("u_soil", 0.5, pct), k("u_soil", 1.5, pct)],
-        ["Biomass uncertainty", k("u_biomass", 0.5, pct), k("u_biomass", 1.5, pct)],
+        ["Soil CV ratio k", k("k_soil", 0.5, v => +v.toFixed(2)), k("k_soil", 1.5, v => +v.toFixed(2))],
+        ["Confidence interval", {mods: {ci: 0.80}, txt: "80%"}, {mods: {ci: 0.95}, txt: "95%"}],
         ["Tower capex", k("capex", 0.5, dollars), k("capex", 1.5, dollars)],
         ["Tower opex (per yr)", k("opex", 0.5, dollars), k("opex", 1.5, dollars)],
-        ["EC towers", {mods: {towers: 1}, txt: "1"}, {mods: {towers: 5}, txt: "5"}],
+        ["Landscape CV", k("cv", 0.5, pct), k("cv", 1.5, pct)],
+        ["Footprint factor r", k("r_ec", 0.5, v => +v.toFixed(2)), k("r_ec", 1.5, v => +v.toFixed(2))],
         ["EC uncertainty", k("u_ec_a", 0.5, v => +v.toFixed(2)), k("u_ec_a", 1.5, v => +v.toFixed(2))],
         ["Leakage", k("frac_leakage", 0.5, pct), k("frac_leakage", 1.5, pct)],
         ["Belowground C sampled", {mods: {frac_shallow: clampShare(P.frac_shallow - 0.1)}, txt: pct(clampShare(P.frac_shallow - 0.1))},
                                   {mods: {frac_shallow: clampShare(P.frac_shallow + 0.1)}, txt: pct(clampShare(P.frac_shallow + 0.1))}],
-      ].filter(([label]) => P.soil_cores || !(["Soil core uncertainty", "Belowground C sampled"].includes(label)))
+      ].filter(([label]) => P.soil_cores || !(["Soil CV ratio k", "Belowground C sampled"].includes(label)))
        .map(([label, lo, hi]) => {
           const key = Object.keys(lo.mods)[0], side = (o) => { const r = res(o.mods); return {a: r.net_EC - r.net_inventory, net: r.net_EC, inv: r.net_inventory, txt: o.txt, dir: Math.sign(o.mods[key] - P[key])}; };
           const L = side(lo), H = side(hi);
