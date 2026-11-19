@@ -331,8 +331,8 @@
   </div>
   <div class="control">
     <label>Credit price: <b id="price_val"></b> $/t CO2e</label>
-    <input id="price" type="range" min="10" max="50" step="5" value="30">
-    <div class="ends"><span>$10</span><span>$50</span></div>
+    <input id="price" type="range" min="10" max="100" step="5" value="50">
+    <div class="ends"><span>$10</span><span>$100</span></div>
   </div>
   <div class="control">
     <label>C stock change: <b id="c_val"></b> t CO2e/ha/yr</label>
@@ -344,6 +344,11 @@
       <label class="sw" for="soil"><input id="soil" type="checkbox" checked><span class="track"></span>
         <span class="sw-text">Soil coring: <b id="soil_state">On</b></span></label>
       <div class="sw-hint" id="soil_hint"></div>
+    </div>
+    <div class="sw-item">
+      <label class="sw" for="roots"><input id="roots" type="checkbox" checked><span class="track"></span>
+        <span class="sw-text">Count roots: <b id="roots_state">On</b></span></label>
+      <div class="sw-hint" id="roots_hint"></div>
     </div>
     <div class="sw-item">
       <label class="sw" for="litter"><input id="litter" type="checkbox"><span class="track"></span>
@@ -388,16 +393,18 @@
         <li><i>T</i>: project window, 10 years; <i>A</i>: project size (ha); <i>p</i>: credit price ($/t CO<sub>2</sub>e)</li>
         <li><i>C</i>: carbon stock change over the project window (t CO<sub>2</sub>e/ha) = annual rate &times; <i>T</i> </li>
         <li><i>f</i><sub>above</sub>, <i>f</i><sub>roots</sub>, <i>f</i><sub>soilC</sub>, <i>f</i><sub>litter</sub>, <i>f</i><sub>leak</sub>: fractions of <i>C</i> change in each pool by ecosystem</li>
-        <li><i>d</i><sub>shallow</sub>: share of belowground carbon (roots + soil) that is shallow, i.e. sampled by soil cores; <i>f</i><sub>shallow</sub> = (<i>f</i><sub>roots</sub> + <i>f</i><sub>soilC</sub>)&middot;<i>d</i><sub>shallow</sub>; <i>f</i><sub>deep</sub>: the remaining (<i>f</i><sub>roots</sub> + <i>f</i><sub>soilC</sub>)(1 &minus; <i>d</i><sub>shallow</sub>) is deep and unsampled</li>
-        <li><i>u</i><sub>bio</sub>, <i>u</i><sub>soil</sub>: uncertainty deductions of biomass plots and soil cores; <i>a</i>, <i>b</i>: EC uncertainty coefficients</li>
+        <li><i>d</i><sub>shallow</sub>: share of soil carbon within the core depth; <i>f</i><sub>shallow</sub> = <i>f</i><sub>soilC</sub>&middot;<i>d</i><sub>shallow</sub>; the remaining <i>f</i><sub>soilC</sub>(1 &minus; <i>d</i><sub>shallow</sub>) is deep and unsampled</li>
+        <li><i>R</i>: root:shoot ratio; roots are estimated from aboveground biomass, so <i>f</i><sub>roots</sub> = <i>R</i>&middot;<i>f</i><sub>above</sub></li>
+        <li><i>u</i><sub>bio</sub>, <i>u</i><sub>soil</sub>: uncertainty deductions of biomass plots (aboveground and roots) and soil cores; <i>a</i>, <i>b</i>: EC uncertainty coefficients</li>
         <li>CV: plot-to-plot coefficient of variation of biomass (heterogeneity slider); <i>k</i>: soil C change CV &divide; biomass CV; <i>r</i>: footprint factor; <i>z</i>: normal quantile for the confidence interval (1.645 at 90%)</li>
       </ul>
 
       <h4>Inventory (biomass plots and soil cores)</h4>
-      <div class="eq">credits<sub>inv</sub> = <i>C</i> &middot; [ <i>f</i><sub>above</sub>(1 &minus; <i>u</i><sub>bio</sub>) + <i>f</i><sub>shallow</sub>(1 &minus; <i>u</i><sub>soil</sub>) + [ <i>f</i><sub>litter</sub>(1 &minus; <i>u</i><sub>litter</sub>) if litter is counted ] ]&nbsp;&nbsp;(t CO<sub>2</sub>e/ha)</div>
+      <div class="eq">credits<sub>inv</sub> = <i>C</i> &middot; [ <i>f</i><sub>above</sub>(1 &minus; <i>u</i><sub>bio</sub>) + [ <i>f</i><sub>roots</sub>(1 &minus; <i>u</i><sub>bio</sub>) if roots are counted ] + <i>f</i><sub>shallow</sub>(1 &minus; <i>u</i><sub>soil</sub>) + [ <i>f</i><sub>litter</sub>(1 &minus; <i>u</i><sub>litter</sub>) if litter is counted ] ]&nbsp;&nbsp;(t CO<sub>2</sub>e/ha)</div>
       <div class="eq">cost<sub>inv</sub> = <i>n</i><sub>surveys</sub> &middot; <i>n</i><sub>plots</sub> &middot; ( <i>n</i><sub>cores</sub> &middot; <i>c</i><sub>core</sub> + <i>c</i><sub>biomass</sub> )</div>
-      <p>If &ldquo;Soil coring in inventory&rdquo; is switched off, only aboveground biomass is measured: shallow belowground carbon earns no credits and coring costs drop out.</p>
-      <p>Only aboveground carbon and shallow belowground carbon (roots + soil sampled by cores) are measured. Deep belowground carbon and leakage earn no credits. Litter earns credits only if &ldquo;Count litter&rdquo; is switched on (in the controls above); no extra cost is added for it.</p>
+      <p>Roots are not cored. As in Verra VM0047 (eq. 4), root carbon is estimated from aboveground biomass with a root:shoot ratio <i>R</i>, so it carries the same plot sampling deduction <i>u</i><sub>bio</sub>. VM0047 deducts sampling error only and treats error in <i>R</i> as a QA/QC matter (&sect;8.5), so no extra deduction is taken for it. Roots are counted only if &ldquo;Count roots&rdquo; is switched on (on by default); VM0047 requires belowground woody biomass but makes non-woody (e.g. grass) roots optional.</p>
+      <p>If &ldquo;Soil coring in inventory&rdquo; is switched off, only biomass plots are measured (aboveground and roots): soil carbon earns no credits and coring costs drop out.</p>
+      <p>Soil cores measure soil carbon down to the core depth. Soil carbon below that depth and leakage earn no credits. Litter earns credits only if &ldquo;Count litter&rdquo; is switched on (in the controls above); no extra cost is added for it.</p>
 
       <h4>Eddy covariance</h4>
       <div class="eq"><i>u</i><sub>EC</sub> = &radic;[ (<i>a</i> + <i>b</i> &middot; <i>C</i>)&sup2; + (<i>u</i><sub>rep</sub> &middot; <i>C</i>)&sup2; ]&nbsp;&nbsp;(t CO<sub>2</sub>e/ha deducted)</div>
@@ -439,14 +446,15 @@
       r_ec: 0.2,                                  // footprint factor: tower-to-tower CV / plot-to-plot CV
       ci: 0.90,                                   // confidence level of the uncertainty (Verra: 90%); z is calculated from it
       // derive(): plots and towers default from the CVs (table edits override); u_biomass, u_soil, u_rep are always computed
-      litter_in_inv: 0, u_litter: 0.2,            // optional: also count litter in the inventory (no added cost, for simplicity)
+      roots_in_inv: 1,                            // toggle: count roots (AGB x R from the biomass plots, no added cost)
+      litter_in_inv: 0, u_litter: 0.2,           // optional: also count litter in the inventory (no added cost, for simplicity)
       u_ec_a: 2.1, u_ec_b: 0.013,                 // EC deduction = a + b * C_change
       frac_above: 0, frac_roots: 0, frac_soilc: 0, frac_shallow: 0, frac_litter: 0, frac_leakage: 0,   // set from ECOSYSTEMS below
     };
     // Fractions of C change in each pool (above + roots + soil C + litter + leakage = 1). Hand-set numbers, edit freely in the table.
-    // frac_shallow is separate (not part of the sum): the share of belowground C (soil + roots) that is shallow, i.e. sampled by soil cores;
-    // the rest is deep and seen only by the tower. The model uses shallow = (roots + soil C) * frac_shallow and deep = (roots + soil C) * (1 - frac_shallow).
-    // Recipe for the vegetated rows: aboveground = B / (1 + R) and roots = B * R / (1 + R), where R is the root-shoot ratio (IPCC GPG LULUCF Table 3A.1.8; Jackson 1996 for cropland; van der Vyver & Cowling 2019 for Spekboom)
+    // frac_shallow is separate (not part of the sum): the share of soil C within the core depth; the rest is deep and seen only by the tower.
+    // Roots are not cored: the inventory estimates them from aboveground biomass x R (VM0047 eq 4), so they are credited in full.
+    // Recipe for the vegetated rows: aboveground = B / (1 + R) and roots = B * R / (1 + R), where R is the root-shoot ratio (IPCC GPG LULUCF Table 3A.1.8; Jackson 1996 for cropland). Spekboom is the exception: all its shares are measured (Mills & Cowling 2006, below)
     // (see ECO_R) and B is the live-biomass share of the net gain (assumed). Roots = B * R / (1 + R); soil C = what is left after B, litter and leakage. Litter (assumed) and leakage (5%, assumed) are fixed.
     const ECOSYSTEMS = {
       "Reforestation":              {frac_above: 0.528, frac_roots: 0.222, frac_soilc: 0.1, frac_shallow: 0.6, frac_litter: 0.10, frac_leakage: 0.05},
@@ -457,11 +465,14 @@
       "Cropland":                   {frac_above: 0.018, frac_roots: 0.002, frac_soilc: 0.85, frac_shallow: 0.706, frac_litter: 0.08, frac_leakage: 0.05},   // R = 0.1 (Jackson 1996), B = 0.02 assumed (cropland gains come from soil management, not biomass)
       "Temperate grassland":        {frac_above: 0.058, frac_roots: 0.092, frac_soilc: 0.75, frac_shallow: 0.53, frac_litter: 0.05, frac_leakage: 0.05},
       "Peatland / wetland":         {frac_above: 0.049, frac_roots: 0.051, frac_soilc: 0.8, frac_shallow: 0.176, frac_litter: 0.05, frac_leakage: 0.05},
-      // Spekboom: R = 2.7 (van der Vyver & Cowling 2019); B = 0.80 assumed -> above = 0.80/3.7. Deep soil 14% from my earlier calc on Mills & Cowling 2006 (Krompoort), so frac_shallow = 1 - 0.14/below; litter 5% (user)
-      "Spekboom thicket":           {frac_above: 0.216, frac_roots: 0.584, frac_soilc: 0.1, frac_shallow: 0.795, frac_litter: 0.05, frac_leakage: 0.05},
+      // Spekboom: measured stock change at Krompoort, Mills & Cowling 2006 Table 6 (K27 "Combined" minus "Transformed", kg C/m2):
+      // aboveground 3.09 + opslag 0.245, roots 0.78, litter 0.12, soil (0-50 cm) 7.1; shares scaled to 95% (leakage 5%). Implied R = 0.78/3.09 = 0.25.
+      // frac_shallow 0.825: 15-20% of the 0-50 cm soil gain lies below 30 cm (core depth), from Mills & Cowling Table 3.
+      "Spekboom thicket":           {frac_above: 0.280, frac_roots: 0.065, frac_soilc: 0.595, frac_shallow: 0.825, frac_litter: 0.010, frac_leakage: 0.05},
     };
     // Root-shoot ratio R (mean, belowground / aboveground biomass), IPCC GPG LULUCF (2003) Table 3A.1.8, and the row used.
     const IPCC_URL = "https://www.ipcc.ch/site/assets/uploads/2018/03/GPG_LULUCF_FULLEN.pdf";
+    const MC_REF = "Measured stock change at Krompoort (27-yr block), <a href='https://doi.org/10.1111/j.1526-100X.2006.00103.x'>Mills &amp; Cowling 2006</a>, Table 6.";
     const ECO_R = {
       "Reforestation":               [0.42, "secondary tropical/sub-tropical forest, <125 t/ha"],
       "Managed forest (broadleaf)":  [0.26, "other broadleaf forest, 75-150 t/ha"],
@@ -471,12 +482,18 @@
       "Temperate grassland":         [1.58, "temperate/sub-tropical/tropical grassland"],
       "Peatland / wetland":          [1.04, "tidal marsh"],
       "Cropland":                    [0.1, "cropland", "<a href='https://link.springer.com/article/10.1007/BF00333714'>Jackson et al. 1996</a>"],
-      "Spekboom thicket":            [2.7, "spekboom thicket", "<a href='https://doi.org/10.1016/j.foreco.2019.05.048'>van der Vyver & Cowling 2019</a>"],
+      "Spekboom thicket":            [0.25, "spekboom thicket (Krompoort, 27 yr)", MC_REF],
     };
     const ecoRef = () => {
       const r = ECO_R[$("eco").value];
       return r ? (r[2] || `<a href='${IPCC_URL}'>IPCC GPG LULUCF 2003, Table 3A.1.8</a>.`) : "";
     };
+    // Spekboom roots row: the default comes from Mills & Cowling's measured change; van der Vyver & Cowling 2019 Table 1 (stocks) gives the plausible range.
+    // Root:shoot from intact stands 0.12-0.63 (25/40, 3.6/29.6, 16.3/34.2); intact minus degraded 0.04 (Powell 2009) to 0.42 (Mills et al. 2005).
+    const VDV_NOTE = " Range in other spekboom stands, root C &divide; biomass C computed from the stocks compiled in <a href='https://doi.org/10.1016/j.foreco.2019.05.048'>van der Vyver &amp; Cowling 2019</a>, Table 1: 0.12&ndash;0.63 for intact stands, 0.04&ndash;0.42 for intact minus degraded (stocks, not measured change).";
+    const rootRef = () => ecoRef() + ($("eco").value === "Spekboom thicket" ? VDV_NOTE : "");
+    // soil and litter rows: only spekboom's come from a measured source (the others are assumed)
+    const poolRef = () => $("eco").value === "Spekboom thicket" ? MC_REF : "";
     Object.assign(P, ECOSYSTEMS["Reforestation"]);
 
     // User edits (double-click a value under Parameters). Pool fractions are remembered per ecosystem.
@@ -519,12 +536,15 @@
     // MRV cost over the project window, and the share of new carbon each method measures
     const costInv = () => P.soil_cores * P.cost_core * P.plots * P.cores * P.surveys + P.cost_biomass * P.plots * P.surveys;
     const costEC = () => (P.capex + P.opex * YEARS) * (P.baselines + P.towers);
-    const shareInv = () => P.frac_above + P.soil_cores * (P.frac_roots + P.frac_soilc) * P.frac_shallow + (P.litter_in_inv ? P.frac_litter : 0);
+    // Roots come from the biomass plots (aboveground x root:shoot ratio R, VM0047 eq 4), so they are counted in full with or without cores;
+    // cores measure soil C only, down to the sampled depth (frac_shallow of soil C).
+    const bioInv = () => P.frac_above + P.roots_in_inv * P.frac_roots;   // share credited from the biomass plots
+    const shareInv = () => bioInv() +P.soil_cores * P.frac_soilc * P.frac_shallow + (P.litter_in_inv ? P.frac_litter : 0);
     const shareEC = () => 1 - P.frac_leakage;
 
     function runModel(C_change, size_ha, price) {
-      const C_inventory = C_change * P.frac_above * (1 - P.u_biomass)
-                        + P.soil_cores * C_change * (P.frac_roots + P.frac_soilc) * P.frac_shallow * (1 - P.u_soil)
+      const C_inventory = C_change * bioInv() * (1 - P.u_biomass)   // roots = AGB x R: same plots, same sampling error (VM0047 8.5)
+                        + P.soil_cores * C_change * P.frac_soilc * P.frac_shallow * (1 - P.u_soil)
                         + (P.litter_in_inv ? C_change * P.frac_litter * (1 - P.u_litter) : 0);
       const u_ec_abs = uEC(C_change);
       const C_EC = Math.max(C_change * (1 - P.frac_leakage) - u_ec_abs, 0);
@@ -590,12 +610,15 @@
     function update() {
       paintSliders();
       Object.assign(P, P0, ECOSYSTEMS[$("eco").value], OVR, OVR_ECO[$("eco").value] || {});
+      P.roots_in_inv = $("roots").checked ? 1 : 0;
+      $("roots_state").textContent = P.roots_in_inv ? "On" : "Off";
+      $("roots_hint").textContent = P.roots_in_inv ? "Root carbon earns inventory credits from root:shoot ratio." : "Root carbon is not counted in the inventory.";
       P.litter_in_inv = $("litter").checked ? 1 : 0;
       $("litter_state").textContent = P.litter_in_inv ? "On" : "Off";
       $("litter_hint").textContent = P.litter_in_inv ? "Litter carbon earns inventory credits (no added survey cost)." : "Litter carbon is not counted in the inventory.";
       P.soil_cores = $("soil").checked ? 1 : 0;
       $("soil_state").textContent = P.soil_cores ? "On" : "Off";
-      $("soil_hint").textContent = P.soil_cores ? "Inventory samples soil cores as well as biomass plots." : "Inventory measures aboveground biomass only: no soil or root credits, no coring cost.";
+      $("soil_hint").textContent = P.soil_cores ? "Inventory samples soil cores." : "Inventory measures biomass plots only: no soil credits, no coring cost.";
       P.cv = +$("het").value / 100;               // patchier landscape: more plots and towers (derive)
       derive();
       $("het_val").textContent = $("het").value;
@@ -668,8 +691,8 @@
     function drawBars(C, size_ha, price) {
       const usdPer = size_ha * price;
       const lit = P.litter_in_inv ? 1 : 0;
-      const ded_inv = C * (P.frac_above * P.u_biomass + P.soil_cores * (P.frac_roots + P.frac_soilc) * P.frac_shallow * P.u_soil + lit * P.frac_litter * P.u_litter);
-      const seen_inv = C * P.frac_above * (1 - P.u_biomass) + P.soil_cores * C * (P.frac_roots + P.frac_soilc) * P.frac_shallow * (1 - P.u_soil) + lit * C * P.frac_litter * (1 - P.u_litter);
+      const ded_inv = C * (bioInv() * P.u_biomass + P.soil_cores * P.frac_soilc * P.frac_shallow * P.u_soil + lit * P.frac_litter * P.u_litter);
+      const seen_inv = C * bioInv() * (1 - P.u_biomass) + P.soil_cores * C * P.frac_soilc * P.frac_shallow * (1 - P.u_soil) + lit * C * P.frac_litter * (1 - P.u_litter);
       const u_ec = Math.min(uEC(C), C * (1 - P.frac_leakage));
       const seen_ec = Math.max(C * (1 - P.frac_leakage) - uEC(C), 0);
       const cost_inv = costInv(), cost_ec = costEC();
@@ -856,22 +879,22 @@
         ["Number of surveys (default: years 1, 5, 10)", "surveys", "int", ""],
         ["Confidence interval", "ci", "pct", "Verra requires 90%. Increase for more conservative estimates. Applies to plots and towers."],
         ["Soil C variability relative to biomass (k)", "k_soil", "num", "How many times more soil C change varies between plots than biomass does (soil CV = k &times; slider CV)."],
-        ["Fraction of belowground C sampled by cores (roots + soil)", "frac_shallow", "pct", ""],
+        ["Fraction of soil C within core depth", "frac_shallow", "pct", `Soil C below the core depth is seen only by the tower. Roots are not cored: they come from aboveground biomass &times; root:shoot ratio (<a href='https://verra.org/methodologies/vm0047-afforestation-reforestation-and-revegetation-v1-1/#'>VM0047</a> eq. 4).${$("eco").value === "Spekboom thicket" ? " Spekboom: 15&ndash;20% of the 0&ndash;50 cm soil gain lies below 30 cm (<a href='https://doi.org/10.1111/j.1526-100X.2006.00103.x'>Mills &amp; Cowling 2006</a>, Table 3)." : ""}`],
         ["Litter C measurement uncertainty (if counted)", "u_litter", "pct", ""],
       ],
       "Eddy covariance": [
         ["Control towers (additional to establish baseline)", "baselines", "int", "SocialCarbon <a href='https://static1.squarespace.com/static/6161c89d030b89374bec0b70/t/69ef372bd2401d40d5f46612/1777284907913/SOCIALCARBON-SCD0003_v1.0.pdf'>SCD0003</a>"],
         ["Project towers", "towers", "int", "Sized for &plusmn;10% at 90% CI, min 1"],
-        ["Tower variability relative to plots (r)", "r_ec", "num", "Factor controlling towers differences from each other compared with plots, &lt;1 as each tower footprint averages over tens of hectares; 0.2 means towers vary 5&times; less than plots (<a href='https://woodwellclimate.org/wp-content/uploads/2015/09/HollingeretalGCB.04.pdf'>Hollinger et al. 2004</a>; <a href='https://scholars.duke.edu/individual/pub736367'>Oren et al. 2006</a>; <a href='https://bg.copernicus.org/articles/22/4507/2025/'>Callejas-Rodelas et al. 2025</a>)."],
+        ["Footprint factor r: tower variability relative to plots", "r_ec", "num", "Factor controlling towers differences from each other compared with plots, &lt;1 as each tower footprint averages over tens of hectares; 0.2 means towers vary 5&times; less than plots (<a href='https://woodwellclimate.org/wp-content/uploads/2015/09/HollingeretalGCB.04.pdf'>Hollinger et al. 2004</a>; <a href='https://scholars.duke.edu/individual/pub736367'>Oren et al. 2006</a>; <a href='https://bg.copernicus.org/articles/22/4507/2025/'>Callejas-Rodelas et al. 2025</a>)."],
         ["Capex per tower", "capex", "usd", ""],
         ["Opex per tower per year", "opex", "usd", ""],
         ["EC measurement uncertainty = a + b × t CO2e/ha<br>(joint random & U* filtering uncertainty)", ["u_ec_a", "u_ec_b"], "pair", "FLUXNET, <a href='https://fluxnet-1flux.org/'>ONEFLUX</a>"],
       ],
       [`Carbon stock changes (10 years): ${$("eco").value}`]: [
         ["Aboveground biomass", "frac_above", "pct", ecoRef()],
-        ["Belowground biomass (roots)", "frac_roots", "pct", ecoRef()],
-        ["Soil carbon", "frac_soilc", "pct", ""],
-        ["Litter", "frac_litter", "pct", ""],
+        ["Belowground biomass (roots)", "frac_roots", "pct", rootRef()],
+        ["Soil carbon", "frac_soilc", "pct", poolRef()],
+        ["Litter", "frac_litter", "pct", poolRef()],
         ["Leakage", "frac_leakage", "pct", ""],
       ],
     };
@@ -978,7 +1001,7 @@
       // Each row varies one parameter low/high; the bar ends are labelled with the parameter value used there.
       const pct = v => +(v * 100).toFixed(1) + "%", dollars = v => "$" + Math.round(v).toLocaleString();
       const k = (key, f, fmt) => ({mods: {[key]: P[key] * f}, txt: fmt(P[key] * f)});
-      const clampShare = d => Math.min(1, Math.max(0, d));   // sampled share of belowground C, +/-10 percentage points
+      const clampShare = d => Math.min(1, Math.max(0, d));   // share of soil C within core depth, +/-10 percentage points
       const items = [
         ["Soil CV ratio k", k("k_soil", 0.5, v => +v.toFixed(2)), k("k_soil", 1.5, v => +v.toFixed(2))],
         ["Confidence interval", {mods: {ci: 0.80}, txt: "80%"}, {mods: {ci: 0.95}, txt: "95%"}],
@@ -988,9 +1011,9 @@
         ["Footprint factor r", k("r_ec", 0.5, v => +v.toFixed(2)), k("r_ec", 1.5, v => +v.toFixed(2))],
         ["EC uncertainty", k("u_ec_a", 0.5, v => +v.toFixed(2)), k("u_ec_a", 1.5, v => +v.toFixed(2))],
         ["Leakage", k("frac_leakage", 0.5, pct), k("frac_leakage", 1.5, pct)],
-        ["Belowground C sampled", {mods: {frac_shallow: clampShare(P.frac_shallow - 0.1)}, txt: pct(clampShare(P.frac_shallow - 0.1))},
+        ["Soil C within core depth", {mods: {frac_shallow: clampShare(P.frac_shallow - 0.1)}, txt: pct(clampShare(P.frac_shallow - 0.1))},
                                   {mods: {frac_shallow: clampShare(P.frac_shallow + 0.1)}, txt: pct(clampShare(P.frac_shallow + 0.1))}],
-      ].filter(([label]) => P.soil_cores || !(["Soil CV ratio k", "Belowground C sampled"].includes(label)))
+      ].filter(([label]) => P.soil_cores || !(["Soil CV ratio k", "Soil C within core depth"].includes(label)))
        .map(([label, lo, hi]) => {
           const key = Object.keys(lo.mods)[0], side = (o) => { const r = res(o.mods); return {a: r.net_EC - r.net_inventory, net: r.net_EC, inv: r.net_inventory, txt: o.txt, dir: Math.sign(o.mods[key] - P[key])}; };
           const L = side(lo), H = side(hi);
@@ -1042,6 +1065,7 @@
     $("het").addEventListener("input", update);
     $("soil").addEventListener("change", update);
     $("litter").addEventListener("change", update);
+    $("roots").addEventListener("change", update);
     $("size").addEventListener("input", update);
     $("price").addEventListener("input", update);
     bindHover("bars", 540, (x, y) => {
